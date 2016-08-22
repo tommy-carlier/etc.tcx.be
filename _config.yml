@@ -1,0 +1,7 @@
+title: etc
+url: http://etc.tcx.be
+baseUrl: /
+
+sass:
+  sass_dir: assets/_sass
+  style: :compressed
