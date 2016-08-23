@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang={% if page.language %}{{page.language}}{% else %}en-US{% endif %}>
+<html lang={% if page.language %}{{page.language}}{% else %}en-US{% endif %}><head>
 <meta charset=utf-8>
 <title>{{page.title}}</title>
 <meta http-equiv=X-UA-Compatible content="IE=edge">
 <meta name=viewport content="width=device-width,initial-scale=1">
-<link rel=stylesheet href="{{site.baseUrl}}assets/site.css">
+<link rel=stylesheet href="{{site.baseUrl}}assets/etc.css">
 <!--[if lt IE 9]><script>(function(){for(var a='abbr,article,aside,figure,footer,header,main,nav,section,time'.split(','),i=a.length;i-=1;)document.createElement(a[i])}())</script><![endif]-->
 <link rel=canonical href="{{site.url}}{{page.url | replace:'index.html',''}}">
-<main role=main>{{content}}</main>
-{% for s in page.scripts %}<script src="{{site.baseUrl}}assets/{{s}}.js"></script>{% endfor %}
+</head><body>{{content}}</body></html>

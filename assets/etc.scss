@@ -1,0 +1,28 @@
+html {
+  font: normal 14pt/1.5 Georgia,serif;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0 auto;
+  max-width: 40em;
+}
+
+@media screen {
+  html {
+    background: #FCFEFF;
+    color: #07203B;
+  }
+}
+
+@media only screen and (max-width: 640px) {
+  html {
+    font-size: 10pt;
+  }
+}
+
+@media print {
+  html {
+    font-size: 11pt;
+  }
+}
