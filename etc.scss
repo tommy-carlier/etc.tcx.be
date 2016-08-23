@@ -20,6 +20,10 @@ h1 {
   font-weight: normal;
 }
 
+.subHeader {
+  font-style: italic;
+}
+
 .flow > * {
   display: inline-block;
 }
@@ -38,7 +42,7 @@ h1 {
     padding: 0 1em;
   }
 
-  .dimmed-text {
+  .dimmedText {
     color: rgba($color-text, .6);
   }
 }
@@ -56,5 +60,9 @@ h1 {
 
   body {
     max-width: none;
+  }
+
+  .dimmedText {
+    color: lighten(#000, 40%);
   }
 }
