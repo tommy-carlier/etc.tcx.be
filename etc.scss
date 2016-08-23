@@ -1,9 +1,10 @@
 ---
 ---
 ;
-$color-bg: #FCFEFF;
-$color-text: #07203B;
+$page-background: #FCFEFF;
+$page-text-color: #07203B;
 $content-font-family: Georgia,serif;
+$selection-background: rgba($page-text-color, .3);
 
 html {
   font: normal 14pt/1.5 $content-font-family;
@@ -34,16 +35,20 @@ h1 {
 
 @media screen {
   html {
-    background: $color-bg;
-    color: $color-text;
+    background: $page-background;
+    color: $page-text-color;
   }
 
   body {
     padding: 0 1em;
   }
 
+  ::selection {
+    background: $selection-background;
+  }
+
   .dimmedText {
-    color: rgba($color-text, .6);
+    color: rgba($page-text-color, .6);
   }
 }
 
