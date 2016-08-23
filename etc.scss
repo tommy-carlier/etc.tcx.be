@@ -1,8 +1,12 @@
 ---
 ---
+;
+$color-bg: #FCFEFF;
+$color-text: #07203B;
+$content-font-family: Georgia,serif;
 
 html {
-  font: normal 14pt/1.5 Georgia,serif;
+  font: normal 14pt/1.5 $content-font-family;
   text-rendering: optimizeLegibility;
 }
 
@@ -26,8 +30,8 @@ h1 {
 
 @media screen {
   html {
-    background: #FCFEFF;
-    color: #07203B;
+    background: $color-bg;
+    color: $color-text;
   }
 
   body {
@@ -35,7 +39,7 @@ h1 {
   }
 
   .dimmed-text {
-    color: rgba(#07203B, 80%);
+    color: lighten($color-text, 20%);
   }
 }
 
