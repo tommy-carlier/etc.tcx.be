@@ -33,6 +33,10 @@ h1 {
   body {
     padding: 0 1em;
   }
+
+  .dimmed-text {
+    color: rgba(#07203B, 80%);
+  }
 }
 
 @media only screen and (max-width: 640px) {
