@@ -39,7 +39,7 @@ h1 {
   }
 
   .dimmed-text {
-    color: lighten($color-text, 20%);
+    color: rgba($color-text, .6);
   }
 }
 
