@@ -9,6 +9,7 @@ html {
 body {
   margin: 0 auto;
   max-width: 40em;
+  box-sizing: border-box;
 }
 
 h1 {
@@ -19,6 +20,10 @@ h1 {
   html {
     background: #FCFEFF;
     color: #07203B;
+  }
+
+  body {
+    padding: 0 1em;
   }
 }
 
@@ -31,5 +36,9 @@ h1 {
 @media print {
   html {
     font-size: 11pt;
+  }
+
+  body {
+    max-width: none;
   }
 }
