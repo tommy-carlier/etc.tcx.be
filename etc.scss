@@ -16,6 +16,14 @@ h1 {
   font-weight: normal;
 }
 
+.flow > * {
+  display: inline-block;
+}
+
+.flow.gutter > *:not(:last-child) {
+  margin-right: 1.5em;
+}
+
 @media screen {
   html {
     background: #FCFEFF;

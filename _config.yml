@@ -3,5 +3,5 @@ url: http://etc.tcx.be
 baseUrl: /
 
 sass:
-  sass_dir: assets/_sass
+  sass_dir: _sass
   style: :compressed
