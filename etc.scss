@@ -17,13 +17,37 @@ body {
   box-sizing: border-box;
 }
 
-h1 {
+h1, h2 {
   font-weight: normal;
   letter-spacing: -0.04em;
 }
 
 header > p {
   font-style: italic;
+}
+
+table {
+  border-collapse: collapse;
+  margin: 1em 0;
+
+  &:first-child { margin-top: 0; }  
+  &:last-child { margin-bottom: 0; }  
+  &:only-child { margin: 0 auto; }
+}
+
+th, td {
+  font-weight: inherit;
+  text-align: left;
+  vertical-align: baseline;
+  padding: 0.1em 0.7em 0.1em 0;
+
+  &:last-child { padding-right: 0; }
+}
+
+thead:first-child > h2 { margin-top: 0; }
+tbody th {
+  white-space: nowrap;
+  font-size: 85%;
 }
 
 .flow > * {
