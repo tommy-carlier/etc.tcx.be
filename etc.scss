@@ -22,8 +22,28 @@ h1, h2 {
   letter-spacing: -0.04em;
 }
 
+p { hyphens: auto; }
+abbr { font-size: 95%; }
+
 header > p {
   font-style: italic;
+}
+
+ul {
+  padding: 0 0 0 1em;
+  margin: 1em 0 1em -1em;
+}
+  
+li > ul {
+  margin: 0 0 0 0.3em;
+}
+
+td > ul {
+  margin: 0 0 1em 0.3em;
+}
+
+h1 + h2, h2 + p, h2 + ul {
+  margin-top: 0.3em;
 }
 
 table {
