@@ -60,11 +60,11 @@ th, td {
   text-align: left;
   vertical-align: baseline;
   padding: 0.1em 0.7em 0.1em 0;
+  box-sizing: border-box;
 
   &:last-child { padding-right: 0; }
 }
 
-thead:first-child > h2 { margin-top: 0; }
 tbody th {
   white-space: nowrap;
   font-size: 85%;
@@ -92,7 +92,7 @@ tbody th {
     background: $selection-background;
   }
 
-  .dimmedText {
+  tbody th, .dimmedText {
     color: rgba($page-text-color, .6);
   }
 }
