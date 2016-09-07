@@ -4,6 +4,9 @@
 $page-background: #FCFEFF;
 $page-text-color: #07203B;
 $selection-background: #BDE9FF;
+$hyperlink-color: #4A79AB;
+$hyperlink-highlight-color: #5F96D1;
+$hyperlink-visited-color: #9953A8;
 $content-font-family: Georgia,serif;
 
 html {
@@ -15,6 +18,10 @@ body {
   margin: 0 auto;
   max-width: 40em;
   box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
 }
 
 h1, h2 {
@@ -88,6 +95,20 @@ tbody th {
     padding: 0 1em;
   }
 
+  a {
+    color: $hyperlink-color;
+    transition: color 0.3s ease;
+
+    &:hover, &:focus {
+      color: $hyperlink-highlight-color;
+      text-decoration: underline;
+    }
+
+    &:visited {
+      color: $hyperlink-visited-color;
+    }
+  }
+
   ::selection {
     background: $selection-background;
   }
@@ -110,6 +131,10 @@ tbody th {
 
   body {
     max-width: none;
+  }
+
+  a, a:visited {
+    color: inherit;
   }
 
   .dimmedText {
