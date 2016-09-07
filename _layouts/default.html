@@ -5,5 +5,5 @@
 {% if page.description %}<meta name=description content="{{page.description | xml_escape}}">{% endif %}
 <meta name=viewport content="width=device-width,initial-scale=1">
 <link rel=stylesheet href="{{site.baseUrl}}etc.css">
-<link rel=canonical href="{{site.url}}{{page.url | replace:'index.html',''}}">
+<link rel=canonical href="{{site.url}}{{page.url | replace:'index.html',''}}">{% if page.robotsNoIndex %}<meta name=robots content="noindex,follow">{% endif %}
 </head><body>{{content}}{% include statcounter.html %}</body></html>
