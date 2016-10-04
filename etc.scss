@@ -16,7 +16,6 @@ html {
 
 body {
   margin: 0 auto;
-  max-width: 40em;
   box-sizing: border-box;
 }
 
@@ -93,6 +92,7 @@ tbody th {
   }
 
   body {
+    max-width: 40em;
     padding: 0 1em;
   }
 
@@ -128,10 +128,6 @@ tbody th {
 @media print {
   html {
     font-size: 11pt;
-  }
-
-  body {
-    max-width: none;
   }
 
   a, a:visited {
