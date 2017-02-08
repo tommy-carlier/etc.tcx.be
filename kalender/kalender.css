@@ -1,7 +1,15 @@
 html, body {
-  font: normal 11pt/1.7 "Segoe UI",Avenir,sans-serif;
+  font: normal 11pt/1.7 'Segoe UI',Avenir,sans-serif;
   height: 100%;
   margin: 0; padding: 0;
+  background: #FFF;
+  color: #000;
+}
+
+.Copyright {
+  position: fixed;
+  left: 4em;
+  bottom: 1em;
 }
 
 .YearView {
@@ -10,7 +18,7 @@ html, body {
   margin: 0 auto;
 }
 
-.Year, .Month, .Week {
+.Copyright, .Year, .Month, .Week {
   font-family: 'Segoe UI Light','Segoe UI',Avenir,sans-serif;
   font-weight: 300;
 }
