@@ -41,15 +41,15 @@
     e.classList.add(cls);
   }
 
+  function appendTxt(p,txt) {
+    p.appendChild(doc.createTextNode(txt));
+  }
+
   function append(p,tag,cls,txt) {
     var e = doc.createElement(tag);
     if(cls.length) addCls(e, cls);
-    if(txt.length) e.appendChild(doc.createTextNode(txt));
+    if(txt.length) appendTxt(e, txt);
     return p.appendChild(e);
-  }
-
-  function appendTxt(p,txt) {
-    p.appendChild(doc.createTextNode(txt));
   }
 
   function appendBtn(p,cls,txt,action) {
