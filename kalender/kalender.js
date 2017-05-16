@@ -1,8 +1,11 @@
 (function(){
+  function toYMD(y,m,d) { return y*10000 + m*100 + d; }
+  function div(a,b) { return a/b>>0; }
+
   var doc = document,
       today = new Date(),
       year = today.getFullYear(),
-      todayYMD = year*10000 + (today.getMonth()+1)*100 + today.getDate(),
+      todayYMD = toYMD(year,today.getMonth()+1,today.getDate()),
       monthNames = ['','januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'],
       shortMonthNames = ['','jan','feb','maa','apr','mei','jun','jul','aug','sep','okt','nov','dec'],
       shortDayNames = ['zo','ma','di','wo','do','vr','za'],
@@ -27,14 +30,12 @@
     return (leap?monthDaysLeap:monthDays)[m];
   }
 
-  function div(a,b) { return a/b>>0; }
-
   function easterYMD(y) {
     var c = div(y,100),
         a = (19*(y%19) + c - div(c,4) - div((c - div((c+8),25)+1),3)+15)%30,
         b = (32 + 2*(c%4 + div(y%100,4)) - a - y%4) % 7,
         md = a + b - 7*div((y%19 + 11*a + 22*b),451) + 114;
-    return y*10000 + div(md,31)*100 + md%31+1;
+    return toYMD(y,div(md,31),md%31+1);
   }
 
   function addCls(e,cls) {
@@ -77,7 +78,7 @@
   }
 
   function appendDay(p,y,m,mday,wday,elems) {
-    var ymd = y*10000 + m*100 + mday,
+    var ymd = toYMD(y,m,mday),
         e = append(p, 'div', 'Day', '');
     e.setAttribute('data-ymd', ymd);
     addCls(e, cssDayNames[wday]);
@@ -105,7 +106,7 @@
     var f = doc.createDocumentFragment(),
         month = 1,
         mday = 1,
-        ymd = year*10000 + month*100 + mday,
+        ymd = toYMD(year,month,mday),
         wday = firstWeekDay(year),
         wnum = firstWeekNum(wday),
         isLeap = isLeapYear(year),
@@ -160,29 +161,29 @@
       }
     }
 
-    appendEvent(dayElems[year*10000+ 101], 'Nieuwjaar');
-    appendEvent(dayElems[year*10000+ 106], 'Driekoningen');
-    appendEvent(dayElems[year*10000+ 214], 'Valentijnsdag');
-    appendEvent(dayElems[year*10000+ 501], 'Dag van de Arbeid');
-    appendEvent(dayElems[year*10000+ 711], 'Feestdag van de Vlaamse Gemeenschap');
-    appendEvent(dayElems[year*10000+ 721], 'Nationale feestdag');
-    appendEvent(dayElems[year*10000+ 815], 'O.L.V. Hemelvaart');
-    appendEvent(dayElems[year*10000+ 927], 'Dag van de Franse Gemeenschap');
-    appendEvent(dayElems[year*10000+1031], 'Halloween');
-    appendEvent(dayElems[year*10000+1101], 'Allerheiligen');
-    appendEvent(dayElems[year*10000+1102], 'Allerzielen');
-    appendEvent(dayElems[year*10000+1111], 'Wapenstilstand');
-    appendEvent(dayElems[year*10000+1111], 'Sint-Maarten');
-    appendEvent(dayElems[year*10000+1115], 'Koningsdag');
-    appendEvent(dayElems[year*10000+1115], 'Dag van de Duitstalige Gemeenschap');
-    appendEvent(dayElems[year*10000+1206], 'Sinterklaas');
-    appendEvent(dayElems[year*10000+1225], 'Kerstmis');
-    appendEvent(dayElems[year*10000+1231], 'Oudejaarsavond');
+    appendEvent(dayElems[toYMD(year,1,1)], 'Nieuwjaar');
+    appendEvent(dayElems[toYMD(year,1,6)], 'Driekoningen');
+    appendEvent(dayElems[toYMD(year,2,14)], 'Valentijnsdag');
+    appendEvent(dayElems[toYMD(year,5,1)], 'Dag van de Arbeid');
+    appendEvent(dayElems[toYMD(year,7,11)], 'Feestdag van de Vlaamse Gemeenschap');
+    appendEvent(dayElems[toYMD(year,7,21)], 'Nationale feestdag');
+    appendEvent(dayElems[toYMD(year,8,15)], 'O.L.V. Hemelvaart');
+    appendEvent(dayElems[toYMD(year,9,27)], 'Dag van de Franse Gemeenschap');
+    appendEvent(dayElems[toYMD(year,10,31)], 'Halloween');
+    appendEvent(dayElems[toYMD(year,11,1)], 'Allerheiligen');
+    appendEvent(dayElems[toYMD(year,11,2)], 'Allerzielen');
+    appendEvent(dayElems[toYMD(year,11,11)], 'Wapenstilstand');
+    appendEvent(dayElems[toYMD(year,11,11)], 'Sint-Maarten');
+    appendEvent(dayElems[toYMD(year,11,15)], 'Koningsdag');
+    appendEvent(dayElems[toYMD(year,11,15)], 'Dag van de Duitstalige Gemeenschap');
+    appendEvent(dayElems[toYMD(year,12,6)], 'Sinterklaas');
+    appendEvent(dayElems[toYMD(year,12,25)], 'Kerstmis');
+    appendEvent(dayElems[toYMD(year,12,31)], 'Oudejaarsavond');
 
-    appendEvent(dayElems[year*10000+ 301], 'Begin van de meteorologische lente');
-    appendEvent(dayElems[year*10000+ 601], 'Begin van de meteorologische zomer');
-    appendEvent(dayElems[year*10000+ 901], 'Begin van de meteorologische herfst');
-    appendEvent(dayElems[year*10000+1201], 'Begin van de meteorologische winter');
+    appendEvent(dayElems[toYMD(year,3,1)], 'Begin van de meteorologische lente');
+    appendEvent(dayElems[toYMD(year,6,1)], 'Begin van de meteorologische zomer');
+    appendEvent(dayElems[toYMD(year,9,1)], 'Begin van de meteorologische herfst');
+    appendEvent(dayElems[toYMD(year,12,1)], 'Begin van de meteorologische winter');
     
     appendEvent(dayElems[easterYMD(year)], 'Pasen');
 
@@ -213,12 +214,12 @@
         case 'navToNextYear':
           year += 1;
           render(view);
-          scrollTo(0, 0);
+          scrollTo(0,0);
           break;
       }
     });
     render(view);
-    setTimeout(scrollToToday, 10);
+    setTimeout(scrollToToday,10);
   }
 
   init(doc.getElementById('yearView'));
