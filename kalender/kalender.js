@@ -1,11 +1,12 @@
 (function(){
   function toYMD(y,m,d) { return y*10000 + m*100 + d; }
+  function dateToYMD(d) { return toYMD(d.getFullYear(),d.getMonth()+1,d.getDate()); }
   function div(a,b) { return a/b>>0; }
 
   var doc = document,
       today = new Date(),
       year = today.getFullYear(),
-      todayYMD = toYMD(year,today.getMonth()+1,today.getDate()),
+      todayYMD = dateToYMD(today),
       monthNames = ['','januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'],
       shortMonthNames = ['','jan','feb','maa','apr','mei','jun','jul','aug','sep','okt','nov','dec'],
       shortDayNames = ['zo','ma','di','wo','do','vr','za'],
@@ -28,6 +29,16 @@
 
   function daysInMonth(m,leap) {
     return (leap?monthDaysLeap:monthDays)[m];
+  }
+
+  function toDate(ymd) {
+    return new Date(div(ymd,10000), div(ymd,100)%100 - 1, ymd%100);
+  }
+
+  function addDays(ymd, days) {
+    var dt = toDate(ymd);
+    dt.setDate(dt.getDate() + days);
+    return dateToYMD(dt);
   }
 
   function easterYMD(y) {
@@ -106,8 +117,10 @@
     var f = doc.createDocumentFragment(),
         month = 1,
         mday = 1,
-        ymd = toYMD(year,month,mday),
-        wday = firstWeekDay(year),
+        ymd1 = toYMD(year,month,mday),
+        ymd = ymd1,
+        wday1 = firstWeekDay(year),
+        wday = wday1,
         wnum = firstWeekNum(wday),
         isLeap = isLeapYear(year),
         mdays = daysInMonth(month, isLeap),
@@ -161,7 +174,7 @@
       }
     }
 
-    appendEvent(dayElems[toYMD(year,1,1)], 'Nieuwjaar');
+    appendEvent(dayElems[ymd1], 'Nieuwjaar');
     appendEvent(dayElems[toYMD(year,1,6)], 'Driekoningen');
     appendEvent(dayElems[toYMD(year,2,14)], 'Valentijnsdag');
     appendEvent(dayElems[toYMD(year,5,1)], 'Dag van de Arbeid');
@@ -185,7 +198,15 @@
     appendEvent(dayElems[toYMD(year,9,1)], 'Begin van de meteorologische herfst');
     appendEvent(dayElems[toYMD(year,12,1)], 'Begin van de meteorologische winter');
     
-    appendEvent(dayElems[easterYMD(year)], 'Pasen');
+    var easter = easterYMD(year);
+    appendEvent(dayElems[easter], 'Pasen');
+    appendEvent(dayElems[addDays(easter,1)], 'Paasmaandag');
+    appendEvent(dayElems[addDays(easter,39)], 'O.L.H. Hemelvaart');
+    appendEvent(dayElems[addDays(easter,49)], 'Pinksteren');
+    appendEvent(dayElems[addDays(easter,50)], 'Pinkstermaandag');
+    
+    appendEvent(dayElems[addDays(ymd1,133-wday1)], 'Moederdag');
+    appendEvent(dayElems[addDays(ymd1,161-wday1)], 'Vaderdag');
 
     if(year < 9999) {
       appendBtn(f, 'NavToNextYear', 'ga naar ' + (year+1), 'navToNextYear');
