@@ -82,6 +82,13 @@ html, body {
   color: rgba(0,0,0,0.5);
 }
 
+.YearDay {
+  float: right;
+  min-width: 2em;
+  text-align: right;
+  color: rgba(0,0,0,0.3);
+}
+
 .DayEvents {
   margin: 0 0 0 6.7em;
   list-style: none;

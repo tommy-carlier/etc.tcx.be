@@ -88,7 +88,7 @@
     append(e, 'li', '', txt);
   }
 
-  function appendDay(p,y,m,mday,wday,elems) {
+  function appendDay(p,y,m,mday,wday,yday,elems) {
     var ymd = toYMD(y,m,mday),
         e = append(p, 'div', 'Day', '');
     e.setAttribute('data-ymd', ymd);
@@ -99,6 +99,7 @@
     append(e, 'span', 'MonthDay', mday.toString());
     appendTxt(e, ' ');
     append(e, 'span', 'DayMonth', shortMonthNames[m]);
+    if(yday) append(e, 'span', 'YearDay', yday.toString());
     elems[ymd] = e;
     if(wday === 4 && mday === 13) appendEvent(e, 'Vrijdag de dertiende');
     return e;
@@ -117,6 +118,7 @@
     var f = doc.createDocumentFragment(),
         month = 1,
         mday = 1,
+        yday = 1,
         ymd1 = toYMD(year,month,mday),
         ymd = ymd1,
         wday1 = firstWeekDay(year),
@@ -135,7 +137,7 @@
     if(wday != 1) {
       appendWeek(f, wnum);
       for(var i = 1, n = wday > 1 ? wday : 7; i < n; i++) {
-        disable(appendDay(f, year-1, 12, 32-n+i, i, dayElems));
+        disable(appendDay(f, year-1, 12, 32-n+i, i, 0, dayElems));
       }
       appendMonth(f, 1, 31);
     } else {
@@ -144,7 +146,7 @@
     }
 
     while(true) {
-      appendDay(f, year, month, mday, wday, dayElems);
+      appendDay(f, year, month, mday, wday, yday, dayElems);
       if(mday < mdays) {
         mday += 1;
       } else {
@@ -166,11 +168,12 @@
         }
         appendWeek(f, wnum); 
       }
+      yday += 1;
     }
 
     if(wday > 0) {
       for(var i = wday; i < 7; i++) {
-        disable(appendDay(f, year+1, 1, i-wday+1, (i+1)%7, dayElems));
+        disable(appendDay(f, year+1, 1, i-wday+1, (i+1)%7, 0, dayElems));
       }
     }
 
