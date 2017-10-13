@@ -79,6 +79,7 @@
         cb(data, err);
       }
     });
+    req.send();
   }
 
   function extractAuteurs(records) {
