@@ -27,8 +27,8 @@
 
   function append(p,tag,cls,txt) {
     var e = d.createElement(tag);
-    if(cls.length) e.classList.add(cls);
-    if(txt.length) e.appendChild(d.createTextNode(txt));
+    if(cls && cls.length) e.classList.add(cls);
+    if(txt && txt.length) e.appendChild(d.createTextNode(txt));
     return p.appendChild(e);
   }
 
