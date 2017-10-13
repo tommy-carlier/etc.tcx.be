@@ -132,14 +132,26 @@
       });
     });
   }
-  
-  if(apiKey) {
+
+  function navigateToListScreen() {
     location.hash = 'listScreen';
     render(loadJson('data'));
     if(navigator.onLine) {
       startDownloadData();
     }
+  }
+  
+  if(apiKey) {
+    navigateToListScreen();
   } else {
     location.hash = 'apiKeyScreen';
+    d.getElementById('apiKeyScreen').addEventListener('submit', function(e) {
+      e.preventDefault();
+      apiKey = d.getElementById('apiKeyInput').value;
+      if(apiKey) {
+        localStorage.setItem('airtableApiKey', apiKey);
+        navigateToListScreen();
+      }
+    });
   }
 }())
