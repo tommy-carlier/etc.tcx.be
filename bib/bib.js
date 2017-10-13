@@ -112,14 +112,14 @@
   }
   
   function startDownloadData() {
-    request('Auteurs?fields=Name', function(json, err) {
+    request('Auteurs?fields%5B%5D=Name', function(json, err) {
       if(err) {
         alert(err);
         return;
       }
 
       var auteurs = extractAuteurs(data.records);
-      request('Boeken?view=Te%20lezen%20(bib)&fields=Titel,Auteur,Vindplaats', function(json, err) {
+      request('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel,Auteur,Vindplaats', function(json, err) {
         if(err) {
           alert(err);
           return;
