@@ -103,7 +103,7 @@
       if(fields.Auteur.length) {
         var auteurID = fields.Auteur[0];
         if(auteurID in auteurs) {
-          boek.auteur = auteus[auteurID];
+          boek.auteur = auteurs[auteurID];
         }
       }
       boeken.push(boek);
