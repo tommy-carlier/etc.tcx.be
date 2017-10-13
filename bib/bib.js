@@ -118,14 +118,14 @@
         return;
       }
 
-      var auteurs = extractAuteurs(data.records);
+      var auteurs = extractAuteurs(json.records);
       request('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel,Auteur,Vindplaats', function(json, err) {
         if(err) {
           alert(err);
           return;
         }
 
-        var boeken = extractBoeken(data.records, auteurs);
+        var boeken = extractBoeken(json.records, auteurs);
         var data = { boeken:boeken };
         saveJson('data', data)
         render(data);
