@@ -68,7 +68,7 @@
         var data = {}, err = '';
         if(req.status == 200) {
           try {
-            data = JSON.parse(data);
+            data = JSON.parse(req.responseText);
           } catch(e) {
             err = 'Kan gegevens niet parsen';
             console.error(e);
