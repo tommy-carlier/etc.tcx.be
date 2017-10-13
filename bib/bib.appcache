@@ -1,6 +1,10 @@
 CACHE MANIFEST
-#201710131109
+#201710131117
 
+CACHE:
 /bib/
 /bib/bib.css
 /bib/bib.js
+
+NETWORK:
+*
