@@ -26,7 +26,7 @@
   var lijstTeLezenBoeken = d.getElementById('lijstTeLezenBoeken');
 
   function append(p,tag,cls,txt) {
-    var e = doc.createElement(tag);
+    var e = d.createElement(tag);
     if(cls.length) addCls(e, cls);
     if(txt.length) appendTxt(e, txt);
     return p.appendChild(e);
