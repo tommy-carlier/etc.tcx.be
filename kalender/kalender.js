@@ -1,4 +1,5 @@
 (function(){
+  "use strict";
   function toYMD(y,m,d) { return y*10000 + m*100 + d; }
   function dateToYMD(d) { return toYMD(d.getFullYear(),d.getMonth()+1,d.getDate()); }
   function div(a,b) { return a/b>>0; }

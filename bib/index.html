@@ -1,0 +1,25 @@
+---
+---
+<!DOCTYPE html>
+<html lang=nl-BE>
+  <head>
+    <meta charset=utf-8>
+    <title>Bib</title>
+    <meta name=viewport content="width=device-width,initial-scale=1">
+    <link rel=stylesheet href="bib.css">
+    <link rel=canonical href="{{site.url}}{{page.url | replace:'index.html',''}}">
+  </head>
+  <body>
+    <div class=Screen id=listScreen>
+      <h1>Te lezen boeken</h1>
+      <dl id=lijstTeLezenBoeken></dl>
+    </div>
+    <form class=Screen id=apiKeyScreen>
+      <label>Airtable API-sleutel<input name=apiKey autofocus></label>
+      <footer>
+        <button type=submit>Opslaan</button>
+      </footer>
+    </form>
+    <script src="bib.js"></script>
+  </body>
+</html>

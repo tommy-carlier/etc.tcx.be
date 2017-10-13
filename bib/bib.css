@@ -1,0 +1,41 @@
+html, body {
+  height: 100%;
+  margin: 0; padding: 0;
+  background: #FFF;
+  color: #000;
+}
+
+body, button, input {
+  font: normal 11pt/1.7 'Segoe UI',Avenir,sans-serif;
+}
+
+.Screen {
+  box-sizing: border-box;
+  max-width: 35em;
+  margin: 0 auto;
+  padding: 0 0.5em;
+}
+
+.Screen:not(:target) {
+  display: none;
+}
+
+label {
+  display: block;
+  font-size: 80%;
+}
+
+label > input {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+form > footer {
+  margin: 0.5em 0;
+}
+
+form > footer > button {
+  font-size: 90%;
+  padding: 0 0.7em;
+}
