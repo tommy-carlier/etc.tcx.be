@@ -20,6 +20,19 @@ body, button, input {
   display: none;
 }
 
+.Title:not(:first-child) {
+  margin-top: 0.5em;
+}
+
+dd {
+  margin: 0;
+  font-size: 80%;
+}
+
+.Author:not(:empty) + .Location:not(:empty)::before {
+  content: ' – ';
+}
+
 label {
   display: block;
   font-size: 80%;

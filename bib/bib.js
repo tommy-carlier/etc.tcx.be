@@ -33,7 +33,7 @@
   }
 
   function renderBoek(lijst, boek) {
-    append(lijst, 'DT', 'Title', boek.title);
+    append(lijst, 'DT', 'Title', boek.titel);
     var dd = append(lijst, 'DD');
     append(dd, 'SPAN', 'Author', boek.auteur);
     append(dd, 'SPAN', 'Location', boek.vindplaats);
@@ -136,7 +136,9 @@
   if(apiKey) {
     location.hash = 'listScreen';
     render(loadJson('data'));
-    startDownloadData();
+    if(navigator.onLine) {
+      startDownloadData();
+    }
   } else {
     location.hash = 'apiKeyScreen';
   }
