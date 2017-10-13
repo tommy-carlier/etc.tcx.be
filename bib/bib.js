@@ -119,7 +119,7 @@
       }
 
       var auteurs = extractAuteurs(json.records);
-      request('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Auteur&fields%5B%5D=Vindplaats', function(json, err) {
+      request('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Auteur&fields%5B%5D=Vindplaats%20bib', function(json, err) {
         if(err) {
           alert(err);
           return;
