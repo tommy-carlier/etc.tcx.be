@@ -1,5 +1,7 @@
+--
+--
 CACHE MANIFEST
-#201710230836
+#{{site.time | date:'%Y%m%d%H%M'}}
 
 CACHE:
 /kalender/
