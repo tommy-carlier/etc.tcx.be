@@ -50,17 +50,13 @@
     return toYMD(y,div(md,31),md%31+1);
   }
 
-  function addCls(e,cls) {
-    e.classList.add(cls);
-  }
-
   function appendTxt(p,txt) {
     p.appendChild(doc.createTextNode(txt));
   }
 
   function append(p,tag,cls,txt) {
     var e = doc.createElement(tag);
-    if(cls.length) addCls(e, cls);
+    if(cls.length) e.classList.add(cls);
     if(txt.length) appendTxt(e, txt);
     return p.appendChild(e);
   }
@@ -93,8 +89,8 @@
     var ymd = toYMD(y,m,mday),
         e = append(p, 'div', 'Day', '');
     e.setAttribute('data-ymd', ymd);
-    addCls(e, cssDayNames[wday]);
-    if(ymd == todayYMD) addCls(e, 'Today');
+    e.classList.add(cssDayNames[wday]);
+    if(ymd == todayYMD) e.classList.add('Today');
     append(e, 'span', 'WeekDay', shortDayNames[wday]);
     appendTxt(e, ' ');
     append(e, 'span', 'MonthDay', mday.toString());
@@ -107,7 +103,7 @@
   }
 
   function disable(e){
-    addCls(e, 'Disabled');
+    e.classList.add('Disabled');
   }
 
   function render(view) {
@@ -120,13 +116,13 @@
         month = 1,
         mday = 1,
         yday = 1,
-        ymd1 = toYMD(year,month,mday),
+        ymd1 = toYMD(year,1,1),
         ymd = ymd1,
         wday1 = firstWeekDay(year),
         wday = wday1,
         wnum = firstWeekNum(wday),
         isLeap = isLeapYear(year),
-        mdays = daysInMonth(month, isLeap),
+        mdays = daysInMonth(1, isLeap),
         dayElems = { };
 
     appendYear(f, year, isLeap ? 366 : 365);
