@@ -7,8 +7,20 @@
     return;
   }
 
-  function loadJson(name) {
-    var s = localStorage[name];
+  function loadOrMigrate(newName, oldName) {
+    var v = localStorage[newName];
+    if(!v && oldName) {
+      v = localStorage[oldName];
+      if(v) {
+        localStorage.setItem(newName, v);
+        localStorage.removeItem(oldName);
+      }
+    }
+    return v;
+  }
+
+  function loadJson(newName, oldName) {
+    var s = loadOrMigrate(newName, oldName);
     if(s) {
       try {
         return JSON.parse(s);
@@ -57,7 +69,7 @@
     }
   }
 
-  var apiKey = localStorage['airtableApiKey'];
+  var apiKey = loadOrMigrate('bib/apiKey', 'airtableApiKey');
 
   function request(url, cb) {
     var req = new XMLHttpRequest();
@@ -127,7 +139,7 @@
 
         var boeken = extractBoeken(json.records, auteurs);
         var data = { boeken:boeken };
-        saveJson('data', data)
+        saveJson('bib/data', data)
         render(data);
       });
     });
@@ -135,7 +147,7 @@
 
   function navigateToListScreen() {
     location.hash = 'listScreen';
-    render(loadJson('data'));
+    render(loadJson('bib/data', 'data'));
     if(navigator.onLine) {
       startDownloadData();
     }
@@ -149,7 +161,7 @@
       e.preventDefault();
       apiKey = d.getElementById('apiKeyInput').value;
       if(apiKey) {
-        localStorage.setItem('airtableApiKey', apiKey);
+        localStorage.setItem('bib/apiKey', apiKey);
         navigateToListScreen();
       }
     });
