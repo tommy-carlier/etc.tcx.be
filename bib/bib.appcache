@@ -1,5 +1,7 @@
+---
+---
 CACHE MANIFEST
-#201710131124
+#{{site.time | date:'%Y%m%d%H%M'}}
 
 CACHE:
 /bib/
