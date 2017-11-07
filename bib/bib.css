@@ -33,6 +33,11 @@ dd {
   content: ' – ';
 }
 
+.Series {
+  margin-left: 1em;
+  opacity: 0.8;
+}
+
 label {
   display: block;
   font-size: 80%;

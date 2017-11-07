@@ -49,6 +49,7 @@
     var dd = append(lijst, 'DD');
     append(dd, 'SPAN', 'Author', boek.auteur);
     append(dd, 'SPAN', 'Location', boek.vindplaats);
+    if(boek.inReeks) append(dd, 'SPAN', 'Series', '(reeks)');
   }
 
   function shuffle(xs) {
@@ -122,7 +123,8 @@
       var boek = {
         titel: fields.Titel,
         vindplaats: fields['Vindplaats bib'],
-        auteur: ''
+        auteur: '',
+        inReeks: fields.Reeks.length > 0
       };
       if(fields.Auteur.length) {
         var auteurID = fields.Auteur[0];
@@ -143,7 +145,7 @@
       }
 
       var auteurs = extractAuteurs(json.records);
-      request('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Auteur&fields%5B%5D=Vindplaats%20bib', function(json, err) {
+      request('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Auteur&fields%5B%5D=Vindplaats%20bib&fields%5B%5D=Reeks', function(json, err) {
         if(err) {
           alert(err);
           return;
