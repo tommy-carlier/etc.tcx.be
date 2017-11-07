@@ -124,7 +124,7 @@
         titel: fields.Titel,
         vindplaats: fields['Vindplaats bib'],
         auteur: '',
-        inReeks: fields.Reeks.length > 0
+        inReeks: 'Reeks' in fields && fields.Reeks.length > 0
       };
       if(fields.Auteur.length) {
         var auteurID = fields.Auteur[0];
