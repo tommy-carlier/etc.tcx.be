@@ -108,13 +108,11 @@
     req.send();
   }
 
-  function extractAuteurs(records) {
-    var auteurs = { };
+  function extractAuteurs(auteurs, records) {
     for(var n = records.length, i = 0; i < n; i++) {
       var record = records[i];
       auteurs[record.id] = record.fields.Name;
     }
-    return auteurs;
   }
 
   function extractBoeken(records, auteurs) {
@@ -140,7 +138,7 @@
   }
 
   function downloadAuteurs(cb) {
-    var auteurs = [];
+    var auteurs = {};
     function reqNextPage(offset) {
       var url = 'Auteurs?fields%5B%5D=Name';
       if(offset.length) url += '&offset=' + offset;
@@ -150,7 +148,7 @@
           return;
         }
 
-        auteurs = auteurs.concat(extractAuteurs(json.records));
+        extractAuteurs(auteurs, json.records);
         if('offset' in json) {
           reqNextPage(json.offset);
         } else cb(auteurs);
