@@ -47,8 +47,9 @@
   function renderBoek(lijst, boek) {
     append(lijst, 'DT', 'Title', boek.titel);
     var dd = append(lijst, 'DD');
-    append(dd, 'SPAN', 'Author', boek.auteur);
-    append(dd, 'SPAN', 'Location', boek.vindplaats);
+    append(dd, 'SPAN', 'Author Sep', boek.auteur);
+    if(boek.paginas > 0) append(dd, 'SPAN', 'PageCount Sep', boek.paginas);
+    append(dd, 'SPAN', 'Location Sep', boek.vindplaats);
     if(boek.inReeks) append(dd, 'SPAN', 'Series', '(reeks)');
   }
 
@@ -124,7 +125,8 @@
         titel: fields.Titel,
         vindplaats: fields['Vindplaats bib'],
         auteur: '',
-        inReeks: 'Reeks' in fields && fields.Reeks.length > 0
+        inReeks: 'Reeks' in fields && fields.Reeks.length > 0,
+        paginas: fields["Pagina's"]||0
       };
       if(fields.Auteur.length) {
         var auteurID = fields.Auteur[0];
@@ -145,7 +147,7 @@
       }
 
       var auteurs = extractAuteurs(json.records);
-      request('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Auteur&fields%5B%5D=Vindplaats%20bib&fields%5B%5D=Reeks', function(json, err) {
+      request('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Auteur&fields%5B%5D=Vindplaats%20bib&fields%5B%5D=Reeks&fields%5B%5D=Pagina%27s', function(json, err) {
         if(err) {
           alert(err);
           return;

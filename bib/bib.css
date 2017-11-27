@@ -29,7 +29,7 @@ dd {
   font-size: 80%;
 }
 
-.Author:not(:empty) + .Location:not(:empty)::before {
+.Sep:not(:empty) + .Sep:not(:empty)::before {
   content: ' – ';
 }
 
