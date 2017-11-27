@@ -140,8 +140,8 @@
   }
 
   function downloadAuteurs(cb) {
-    var auteurs = [], offset = '';
-    function reqNext() {
+    var auteurs = [];
+    function reqNextPage(offset) {
       var url = 'Auteurs?fields%5B%5D=Name';
       if(offset.length) url += '&offset=' + offset;
       request(url, function(json, err) {
@@ -152,12 +152,11 @@
 
         auteurs = auteurs.concat(extractAuteurs(json.records));
         if('offset' in json) {
-          offset = json.offset;
-          reqNext();
+          reqNextPage(json.offset);
         } else cb(auteurs);
       });
     }
-    reqNext();
+    reqNextPage('');
   }
   
   function startDownloadData() {
