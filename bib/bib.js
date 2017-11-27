@@ -46,7 +46,7 @@
 
   function renderBoek(lijst, boek) {
     append(lijst, 'DT', 'Title', boek.titel);
-    var dd = append(lijst, 'DD');
+    var dd = append(lijst, 'DD', 'Details');
     append(dd, 'SPAN', 'Author Sep', boek.auteur);
     if(boek.paginas > 0) append(dd, 'SPAN', 'PageCount Sep', boek.paginas + 'p');
     append(dd, 'SPAN', 'Location Sep', boek.vindplaats);

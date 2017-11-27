@@ -20,12 +20,8 @@ body, button, input {
   display: none;
 }
 
-.Title:not(:first-child) {
-  margin-top: 0.5em;
-}
-
-dd {
-  margin: 0;
+.Details {
+  margin: 0 0 1.5em;
   font-size: 80%;
 }
 
