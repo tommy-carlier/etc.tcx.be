@@ -142,7 +142,7 @@
   function downloadAuteurs(cb) {
     var auteurs = [], offset = '';
     function reqNext() {
-      var url = 'Auteurs?fields=%5B%5D=Name';
+      var url = 'Auteurs?fields%5B%5D=Name';
       if(offset.length) url += '&offset=' + offset;
       request(url, function(json, err) {
         if(err) {
