@@ -39,7 +39,7 @@
 
   function append(p,tag,cls,txt) {
     var e = d.createElement(tag);
-    if(cls && cls.length) e.classList.add(cls);
+    if(cls && cls.length) e.className = cls;
     if(txt && txt.length) e.appendChild(d.createTextNode(txt));
     return p.appendChild(e);
   }
