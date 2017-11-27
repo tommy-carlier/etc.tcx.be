@@ -30,7 +30,7 @@ dd {
 }
 
 .Sep:not(:empty) + .Sep:not(:empty)::before {
-  content: ' – ';
+  content: '; ';
 }
 
 .Series {

@@ -138,15 +138,35 @@
     }
     return boeken;
   }
+
+  function downloadAuteurs(cb) {
+    var auteurs = [], offset = '';
+    function reqNext() {
+      var url = 'Auteurs?fields=%5B%5D=Name';
+      if(offset.length) url += '&offset=' + offset;
+      request(url, function(json, err) {
+        if(err) {
+          cb([], err);
+          return;
+        }
+
+        auteurs = auteurs.concat(extractAuteurs(json.records));
+        if('offset' in json) {
+          offset = json.offset;
+          reqNext();
+        } else cb(auteurs);
+      });
+    }
+    reqNext();
+  }
   
   function startDownloadData() {
-    request('Auteurs?fields%5B%5D=Name', function(json, err) {
+    downloadAuteurs(function(auteurs, err) {
       if(err) {
         alert(err);
         return;
       }
 
-      var auteurs = extractAuteurs(json.records);
       request('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Auteur&fields%5B%5D=Vindplaats%20bib&fields%5B%5D=Reeks&fields%5B%5D=Pagina%27s', function(json, err) {
         if(err) {
           alert(err);
