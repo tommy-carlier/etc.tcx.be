@@ -48,7 +48,7 @@
     append(lijst, 'DT', 'Title', boek.titel);
     var dd = append(lijst, 'DD');
     append(dd, 'SPAN', 'Author Sep', boek.auteur);
-    if(boek.paginas > 0) append(dd, 'SPAN', 'PageCount Sep', boek.paginas);
+    if(boek.paginas > 0) append(dd, 'SPAN', 'PageCount Sep', boek.paginas + 'p');
     append(dd, 'SPAN', 'Location Sep', boek.vindplaats);
     if(boek.inReeks) append(dd, 'SPAN', 'Series', '(reeks)');
   }
