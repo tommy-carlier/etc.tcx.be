@@ -35,7 +35,8 @@
     } catch(e) { /* storage failed */ }
   }
 
-  var lijstTeLezenBoeken = d.getElementById('lijstTeLezenBoeken');
+  var lijstTeLezenBoeken = d.getElementById('lijstTeLezenBoeken'),
+    lijstTeBekijkenFilms = d.getElementById('lijstTeBekijkenFilms');
 
   function append(p,tag,cls,txt) {
     var e = d.createElement(tag);
@@ -53,6 +54,14 @@
     if(boek.inReeks) append(dd, 'SPAN', 'Series', '(reeks)');
   }
 
+  function renderFilm(lijst, film) {
+    append(lijst, 'DT', 'Title', film.titel);
+    if(film.jaarUitgegeven > 0) {
+      var dd = append(lijst, 'DD', 'Details');
+      append(dd, 'SPAN', 'YearPublished', '' + film.jaarUitgegeven);
+    }
+  }
+
   function shuffle(xs) {
     var i = xs.length, x, rnd;
     while(i) {
@@ -64,30 +73,41 @@
     }
   }
 
-  function render(data) {
-    if('boeken' in data) {
-      var boeken = data.boeken,
-          f = d.createDocumentFragment();
+  function renderBoeken(boeken) {
+    var f = d.createDocumentFragment();
 
-      shuffle(boeken);
-      for(var n = boeken.length, i = 0; i < n; i++){
-        var boek = boeken[i];
-        renderBoek(f, boek);
-      }
-
-      while(lijstTeLezenBoeken.firstChild) {
-        lijstTeLezenBoeken.removeChild(lijstTeLezenBoeken.firstChild);
-      }
-
-      lijstTeLezenBoeken.appendChild(f);
+    shuffle(boeken);
+    for(var n = boeken.length, i = 0; i < n; i++){
+      renderBoek(f, boeken[i]);
     }
+
+    while(lijstTeLezenBoeken.firstChild) {
+      lijstTeLezenBoeken.removeChild(lijstTeLezenBoeken.firstChild);
+    }
+
+    lijstTeLezenBoeken.appendChild(f);
+  }
+
+  function renderFilms(films) {
+    var f = d.createDocumentFragment();
+    
+    shuffle(films);
+    for(var n = films.length, i = 0; i < n; i++){
+      renderFilm(f, films[i]);
+    }
+
+    while(lijstTeBekijkenFilms.firstChild) {
+      lijstTeBekijkenFilms.removeChild(lijstTeBekijkenFilms.firstChild);
+    }
+
+    lijstTeBekijkenFilms.appendChild(f);
   }
 
   var apiKey = loadOrMigrate('bib/apiKey', 'airtableApiKey');
 
   function request(url, cb) {
     var req = new XMLHttpRequest();
-    req.open('GET', 'https://api.airtable.com/v0/appS3vbT8bkcbfnbt/' + url, true);
+    req.open('GET', 'https://api.airtable.com/v0/' + url, true);
     req.setRequestHeader('Authorization', 'Bearer ' + apiKey);
     req.addEventListener('readystatechange', function() {
       if(req.readyState == 4) {
@@ -106,6 +126,14 @@
       }
     });
     req.send();
+  }
+
+  function requestTeLezenBoeken(url, cb) {
+    request('appS3vbT8bkcbfnbt/' + url, cb);
+  }
+
+  function requestTeBekijkenFilms(url, cb) {
+    request('app2cUKpOgqnvXJn2/' + url, cb);
   }
 
   function extractAuteurs(auteurs, records) {
@@ -137,12 +165,24 @@
     return boeken;
   }
 
+  function extractFilms(records) {
+    var films = [];
+    for(var n = records.length, i = 0; i < n; i++) {
+      var fields = records[i].fields;
+      films.push({
+        titel: fields.Titel,
+        jaarUitgegeven: fields['Jaar uitgegeven']||0
+      });
+    }
+    return films;
+  }
+
   function downloadAuteurs(cb) {
     var auteurs = {};
     function reqNextPage(offset) {
       var url = 'Auteurs?fields%5B%5D=Name';
       if(offset.length) url += '&offset=' + offset;
-      request(url, function(json, err) {
+      requestTeLezenBoeken(url, function(json, err) {
         if(err) {
           cb([], err);
           return;
@@ -164,23 +204,35 @@
         return;
       }
 
-      request('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Auteur&fields%5B%5D=Vindplaats%20bib&fields%5B%5D=Reeks&fields%5B%5D=Pagina%27s', function(json, err) {
+      requestTeLezenBoeken('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Auteur&fields%5B%5D=Vindplaats%20bib&fields%5B%5D=Reeks&fields%5B%5D=Pagina%27s', function(json, err) {
         if(err) {
           alert(err);
           return;
         }
 
         var boeken = extractBoeken(json.records, auteurs);
-        var data = { boeken:boeken };
-        saveJson('bib/data', data)
-        render(data);
+        saveJson('bib/boeken', boeken);
+        renderBoeken(boeken);
       });
+    });
+
+    requestTeBekijkenFilms('Films?view=Te%20bekijken%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Jaar%20uitgegeven', function(json, err) {
+      if(err) {
+        alert(err);
+        return;
+      }
+
+      var films = extractFilms(json.records);
+      saveJson('bib/films', films);
+      renderFilms(films);
     });
   }
 
   function navigateToListScreen() {
     location.hash = 'listScreen';
-    render(loadJson('bib/data', 'data'));
+    localStorage.removeItem('bib/data');
+    renderBoeken(loadJson('bib/boeken'));
+    renderFilms(loadJson('bib/films'));
     if(navigator.onLine) {
       startDownloadData();
     }
