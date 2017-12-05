@@ -201,25 +201,32 @@
     }
     reqNextPage('');
   }
+
+  function joinBoekenAuteurs(boekRecs, auteurs) {
+    var boeken = extractBoeken(boekRecs, auteurs);
+    saveJson('bib/boeken', boeken);
+    renderBoeken(boeken);
+  }
   
   function startDownloadData() {
-    var auteurs = { geladen:false }, boeken = [], films = [];
+    var auteurs = { geladen:false }, boekRecs = [];
+    
     downloadAuteurs(auteurs, function(err) {
       if(err) {
         alert('Download auteurs: ' + err);
         return;
       }
+      if(boekRecs.length) joinBoekenAuteurs(boekRecs, auteurs);
+    });
 
-      requestTeLezenBoeken('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Auteur&fields%5B%5D=Vindplaats%20bib&fields%5B%5D=Reeks&fields%5B%5D=Pagina%27s', function(json, err) {
-        if(err) {
-          alert('Download te lezen boeken: ' + err);
-          return;
-        }
+    requestTeLezenBoeken('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Auteur&fields%5B%5D=Vindplaats%20bib&fields%5B%5D=Reeks&fields%5B%5D=Pagina%27s', function(json, err) {
+      if(err) {
+        alert('Download te lezen boeken: ' + err);
+        return;
+      }
 
-        var boeken = extractBoeken(json.records, auteurs);
-        saveJson('bib/boeken', boeken);
-        renderBoeken(boeken);
-      });
+      boekRecs = json.records;
+      if(auteurs.geladen) joinBoekenAuteurs(boekRecs, auteurs);
     });
 
     requestTeBekijkenFilms('Films?view=Te%20bekijken%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Jaar%20uitgegeven', function(json, err) {
