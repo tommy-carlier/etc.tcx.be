@@ -50,7 +50,8 @@
   }
 
   function getBoekDetails(boek) {
-    var txt = [boek.auteur];
+    var txt = [];
+    if(boek.auteur.length) txt.push(boek.auteur);
     if(boek.paginas > 0) txt.push(boek.paginas + 'p');
     txt.push(boek.vindplaats);
     return txt.join('; ');
