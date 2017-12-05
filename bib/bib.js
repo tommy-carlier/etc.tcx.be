@@ -180,28 +180,31 @@
     return films;
   }
 
-  function downloadAuteurs(cb) {
-    var auteurs = {};
+  function downloadAuteurs(auteurs, cb) {
     function reqNextPage(offset) {
       var url = 'Auteurs?fields%5B%5D=Name';
       if(offset.length) url += '&offset=' + offset;
       requestTeLezenBoeken(url, function(json, err) {
         if(err) {
-          cb([], err);
+          cb(err);
           return;
         }
 
         extractAuteurs(auteurs, json.records);
         if('offset' in json) {
           reqNextPage(json.offset);
-        } else cb(auteurs);
+        } else {
+          auteurs.geladen = true;
+          cb();
+        }
       });
     }
     reqNextPage('');
   }
   
   function startDownloadData() {
-    downloadAuteurs(function(auteurs, err) {
+    var auteurs = { geladen:false }, boeken = [], films = [];
+    downloadAuteurs(auteurs, function(err) {
       if(err) {
         alert('Download auteurs: ' + err);
         return;
