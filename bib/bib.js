@@ -38,19 +38,28 @@
   var lijstTeLezenBoeken = d.getElementById('lijstTeLezenBoeken'),
     lijstTeBekijkenFilms = d.getElementById('lijstTeBekijkenFilms');
 
+  function appendTxt(p,txt) {
+    p.appendChild(d.createTextNode(txt));
+  }
+
   function append(p,tag,cls,txt) {
     var e = d.createElement(tag);
     if(cls && cls.length) e.className = cls; // can contain spaces
-    if(txt && txt.length) e.appendChild(d.createTextNode(txt));
+    if(txt && txt.length) appendTxt(e, txt);
     return p.appendChild(e);
+  }
+
+  function getBoekDetails(boek) {
+    var txt = [boek.auteur];
+    if(boek.paginas > 0) txt.push(boek.paginas + 'p');
+    txt.push(boek.vindplaats);
+    return txt.join('; ');
   }
 
   function renderBoek(lijst, boek) {
     append(lijst, 'DT', 'Title', boek.titel);
     var dd = append(lijst, 'DD', 'Details');
-    append(dd, 'SPAN', 'Author Sep', boek.auteur);
-    if(boek.paginas > 0) append(dd, 'SPAN', 'PageCount Sep', boek.paginas + 'p');
-    append(dd, 'SPAN', 'Location Sep', boek.vindplaats);
+    appendTxt(dd, getBoekDetails(boek));
     if(boek.inReeks) append(dd, 'SPAN', 'Series', '(reeks)');
   }
 
@@ -58,7 +67,7 @@
     append(lijst, 'DT', 'Title', film.titel);
     if(film.jaarUitgegeven > 0) {
       var dd = append(lijst, 'DD', 'Details');
-      append(dd, 'SPAN', 'YearPublished', '' + film.jaarUitgegeven);
+      appendTxt(dd, film.jaarUitgegeven);
     }
   }
 
@@ -73,34 +82,27 @@
     }
   }
 
-  function renderBoeken(boeken) {
+  function renderItems(list, items, render) {
     var f = d.createDocumentFragment();
-
-    shuffle(boeken);
-    for(var n = boeken.length, i = 0; i < n; i++){
-      renderBoek(f, boeken[i]);
+    
+    shuffle(items);
+    for(var n = items.length, i = 0; i < n; i++){
+      render(f, items[i]);
     }
 
-    while(lijstTeLezenBoeken.firstChild) {
-      lijstTeLezenBoeken.removeChild(lijstTeLezenBoeken.firstChild);
+    while(list.firstChild) {
+      list.removeChild(list.firstChild);
     }
 
-    lijstTeLezenBoeken.appendChild(f);
+    list.appendChild(f);
+  }
+
+  function renderBoeken(boeken) {
+    renderItems(lijstTeLezenBoeken, boeken, renderBoek);
   }
 
   function renderFilms(films) {
-    var f = d.createDocumentFragment();
-    
-    shuffle(films);
-    for(var n = films.length, i = 0; i < n; i++){
-      renderFilm(f, films[i]);
-    }
-
-    while(lijstTeBekijkenFilms.firstChild) {
-      lijstTeBekijkenFilms.removeChild(lijstTeBekijkenFilms.firstChild);
-    }
-
-    lijstTeBekijkenFilms.appendChild(f);
+    renderItems(lijstTeBekijkenFilms, films, renderFilm);
   }
 
   var apiKey = loadOrMigrate('bib/apiKey', 'airtableApiKey');
