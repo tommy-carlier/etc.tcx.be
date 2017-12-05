@@ -203,13 +203,13 @@
   function startDownloadData() {
     downloadAuteurs(function(auteurs, err) {
       if(err) {
-        alert(err);
+        alert('Download auteurs: ' + err);
         return;
       }
 
       requestTeLezenBoeken('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Auteur&fields%5B%5D=Vindplaats%20bib&fields%5B%5D=Reeks&fields%5B%5D=Pagina%27s', function(json, err) {
         if(err) {
-          alert(err);
+          alert('Download te lezen boeken: ' + err);
           return;
         }
 
@@ -221,7 +221,7 @@
 
     requestTeBekijkenFilms('Films?view=Te%20bekijken%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Jaar%20uitgegeven', function(json, err) {
       if(err) {
-        alert(err);
+        alert('Download te bekijken films: ' + err);
         return;
       }
 
