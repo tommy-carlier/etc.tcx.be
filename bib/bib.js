@@ -91,9 +91,10 @@
       render(f, items[i]);
     }
 
-    while(list.firstChild) {
-      list.removeChild(list.firstChild);
-    }
+    var range = d.createRange();
+    range.selectNodeContents(list);
+    range.deleteContents();
+    range.detach();
 
     list.appendChild(f);
   }
