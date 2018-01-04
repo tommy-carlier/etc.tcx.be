@@ -183,7 +183,7 @@
 
   function downloadAuteurs(auteurs, cb) {
     function reqNextPage(offset) {
-      var url = 'Auteurs?fields%5B%5D=Name';
+      var url = 'Auteurs?view=Te%20lezen%20in%20bib&fields%5B%5D=Name';
       if(offset.length) url += '&offset=' + offset;
       requestTeLezenBoeken(url, function(json, err) {
         if(err) {
