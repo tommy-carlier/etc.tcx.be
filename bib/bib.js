@@ -72,21 +72,9 @@
     }
   }
 
-  function shuffle(xs) {
-    var i = xs.length, x, rnd;
-    while(i) {
-      rnd = Math.floor(Math.random() * i);
-      i -= 1;
-      x = xs[i];
-      xs[i] = xs[rnd];
-      xs[rnd] = x;
-    }
-  }
-
   function renderItems(list, items, render) {
     var f = d.createDocumentFragment();
     
-    shuffle(items);
     for(var n = items.length, i = 0; i < n; i++){
       render(f, items[i]);
     }
@@ -99,11 +87,34 @@
     list.appendChild(f);
   }
 
+  function compare(a, b) {
+    if(a < b) return -1;
+    if(a > b) return 1;
+    return 0;
+  }
+
+  function compareBoeken(a, b) {
+    return compare(a.vindplaats, b.vindplaats) || compare(a.titel, b.titel);
+  }
+
   function renderBoeken(boeken) {
+    boeken.sort(compareBoeken);
     renderItems(lijstTeLezenBoeken, boeken, renderBoek);
   }
 
+  function shuffle(xs) {
+    var i = xs.length, x, rnd;
+    while(i) {
+      rnd = Math.floor(Math.random() * i);
+      i -= 1;
+      x = xs[i];
+      xs[i] = xs[rnd];
+      xs[rnd] = x;
+    }
+  }
+
   function renderFilms(films) {
+    shuffle(films);
     renderItems(lijstTeBekijkenFilms, films, renderFilm);
   }
 
