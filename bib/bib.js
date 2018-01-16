@@ -93,12 +93,7 @@
     return 0;
   }
 
-  function compareBoeken(a, b) {
-    return compare(a.vindplaats, b.vindplaats) || compare(a.titel, b.titel);
-  }
-
   function renderBoeken(boeken) {
-    boeken.sort(compareBoeken);
     renderItems(lijstTeLezenBoeken, boeken, renderBoek);
   }
 
