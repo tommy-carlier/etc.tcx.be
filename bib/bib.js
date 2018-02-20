@@ -3,7 +3,7 @@
 
   var w = window, d = document;
   
-  if(!(w.localStorage && w.JSON && w.XMLHttpRequest)) {
+  if(!(w.localStorage && w.JSON && w.fetch)) {
     return;
   }
 
@@ -110,26 +110,12 @@
   var apiKey = loadOrMigrate('bib/apiKey', 'airtableApiKey');
 
   function request(url, cb) {
-    var req = new XMLHttpRequest();
-    req.open('GET', 'https://api.airtable.com/v0/' + url, true);
-    req.setRequestHeader('Authorization', 'Bearer ' + apiKey);
-    req.addEventListener('readystatechange', function() {
-      if(req.readyState == 4) {
-        var data = {}, err = '';
-        if(req.status == 200) {
-          try {
-            data = JSON.parse(req.responseText);
-          } catch(e) {
-            err = 'Kan gegevens niet parsen';
-            console.error(e);
-          }
-        } else {
-          err = req.status ? req.statusText + ' (' + req.status + ')\n' + req.responseText : 'Server offline';
-        }
-        cb(data, err);
-      }
-    });
-    req.send();
+    fetch('https://api.airtable.com/v0/' + url, {
+      headers: { Authorization: 'Bearer ' + apiKey }
+    }).then(response => response.ok ? response : Promise.reject(Error(req.statusText)))
+    .then(response => response.json())
+    .then(json => cb(json, ''))
+    .catch(err => cb({}, err));
   }
 
   function requestTeLezenBoeken(url, cb) {
@@ -185,7 +171,7 @@
     function reqNextPage(offset) {
       var url = 'Auteurs?view=Te%20lezen%20in%20bib&fields%5B%5D=Name';
       if(offset.length) url += '&offset=' + offset;
-      requestTeLezenBoeken(url, function(json, err) {
+      requestTeLezenBoeken(url, (json, err) => {
         if(err) {
           cb(err);
           return;
@@ -212,7 +198,7 @@
   function startDownloadData() {
     var auteurs = { geladen:false }, boekRecs = [];
     
-    downloadAuteurs(auteurs, function(err) {
+    downloadAuteurs(auteurs, err => {
       if(err) {
         alert('Download auteurs: ' + err);
         return;
@@ -220,7 +206,7 @@
       if(boekRecs.length) joinBoekenAuteurs(boekRecs, auteurs);
     });
 
-    requestTeLezenBoeken('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Auteur&fields%5B%5D=Vindplaats%20bib&fields%5B%5D=Reeks&fields%5B%5D=Pagina%27s', function(json, err) {
+    requestTeLezenBoeken('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Auteur&fields%5B%5D=Vindplaats%20bib&fields%5B%5D=Reeks&fields%5B%5D=Pagina%27s', (json, err) => {
       if(err) {
         alert('Download te lezen boeken: ' + err);
         return;
@@ -230,7 +216,7 @@
       if(auteurs.geladen) joinBoekenAuteurs(boekRecs, auteurs);
     });
 
-    requestTeBekijkenFilms('Films?view=Te%20bekijken%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Jaar%20uitgegeven', function(json, err) {
+    requestTeBekijkenFilms('Films?view=Te%20bekijken%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Jaar%20uitgegeven', (json, err) => {
       if(err) {
         alert('Download te bekijken films: ' + err);
         return;
@@ -256,7 +242,7 @@
     navigateToListScreen();
   } else {
     location.hash = 'apiKeyScreen';
-    d.getElementById('apiKeyScreen').addEventListener('submit', function(e) {
+    d.getElementById('apiKeyScreen').addEventListener('submit', e => {
       e.preventDefault();
       apiKey = d.getElementById('apiKeyInput').value;
       if(apiKey) {
