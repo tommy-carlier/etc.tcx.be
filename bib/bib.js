@@ -252,7 +252,7 @@
     }
   }
   
-  if(apiKey) {
+  if(apiKey && (location.hash != 'apiKeyScreen')) {
     navigateToListScreen();
   } else {
     location.hash = 'apiKeyScreen';
