@@ -7,6 +7,10 @@
     return;
   }
 
+  if(w.applicationCache) {
+    applicationCache.addEventListener('updateready', ev => applicationCache.swapCache());
+  }
+
   function loadOrMigrate(newName, oldName) {
     var v = localStorage[newName];
     if(!v && oldName) {
