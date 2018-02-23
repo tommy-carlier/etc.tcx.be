@@ -58,7 +58,7 @@
     if(boek.auteur.length) txt.push(boek.auteur);
     if(boek.paginas > 0) txt.push(boek.paginas + 'p');
     txt.push(boek.vindplaats);
-    return txt.join('; ');
+    return txt.join(' – ');
   }
 
   function renderBoek(lijst, boek) {
@@ -68,12 +68,23 @@
     if(boek.inReeks) append(dd, 'SPAN', 'Series', '(reeks)');
   }
 
+  function formatDuration(seconds) {
+    var hours = Math.floor(seconds / (60 * 60));
+    var minutes = Math.round((seconds - hours * 60 * 60) / 60);
+    return hours.toString() + ':' + (minutes < 10 ? '0' + minutes : minutes);
+  }
+
+  function getFilmDetails(film) {
+    var txt = [];
+    if(film.jaarUitgegeven > 0) txt.push(film.jaarUitgegeven);
+    if(film.duur) txt.push(formatDuration(film.duur));
+    return txt.join(' – ');
+  }
+
   function renderFilm(lijst, film) {
     append(lijst, 'DT', 'Title', film.titel);
-    if(film.jaarUitgegeven > 0) {
-      var dd = append(lijst, 'DD', 'Details');
-      appendTxt(dd, film.jaarUitgegeven);
-    }
+    var dd = append(lijst, 'DD', 'Details');
+    appendTxt(dd, getFilmDetails(film));
   }
 
   function renderItems(list, items, render) {
@@ -165,7 +176,8 @@
       var fields = records[i].fields;
       films.push({
         titel: fields.Titel,
-        jaarUitgegeven: fields['Jaar uitgegeven']||0
+        jaarUitgegeven: fields['Jaar uitgegeven']||0,
+        duur: fields.Duur
       });
     }
     return films;
@@ -220,7 +232,7 @@
       if(auteurs.geladen) joinBoekenAuteurs(boekRecs, auteurs);
     });
 
-    requestTeBekijkenFilms('Films?view=Te%20bekijken%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Jaar%20uitgegeven', (json, err) => {
+    requestTeBekijkenFilms('Films?view=Te%20bekijken%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Jaar%20uitgegeven&fields%5B%5D=Duur', (json, err) => {
       if(err) {
         alert('Download te bekijken films: ' + err);
         return;
