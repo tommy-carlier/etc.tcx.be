@@ -137,12 +137,34 @@
     .catch(err => cb({}, err));
   }
 
+  function requestRecords(url, cb) {
+    var records = [];
+    function reqNextPage(offset) {
+      var urlWithOffset = url;
+      if(offset.length) urlWithOffset += '&offset=' + offset;
+      request(urlWithOffset, (json, err) => {
+        if(err) {
+          cb(records, err);
+          return;
+        }
+
+        records = records.concat(json.records);
+        if('offset' in json) {
+          reqNextPage(json.offset);
+        } else {
+          cb(records);
+        }
+      });
+    }
+    reqNextPage('');
+  }
+
   function requestTeLezenBoeken(url, cb) {
-    request('appS3vbT8bkcbfnbt/' + url, cb);
+    requestRecords('appS3vbT8bkcbfnbt/' + url, cb);
   }
 
   function requestTeBekijkenFilms(url, cb) {
-    request('app2cUKpOgqnvXJn2/' + url, cb);
+    requestRecords('app2cUKpOgqnvXJn2/' + url, cb);
   }
 
   function extractNames(items, records) {
@@ -195,48 +217,25 @@
     return films;
   }
 
-  function downloadAuteurs(auteurs, cb) {
-    function reqNextPage(offset) {
-      var url = 'Auteurs?view=Te%20lezen%20in%20bib&fields%5B%5D=Name';
-      if(offset.length) url += '&offset=' + offset;
-      requestTeLezenBoeken(url, (json, err) => {
-        if(err) {
-          cb(err);
-          return;
-        }
+  function downloadBoekenNames(url, items, cb) {
+    requestTeLezenBoeken(url, (records, err) => {
+      if(err) {
+        cb(err);
+        return;
+      }
 
-        extractNames(auteurs, json.records);
-        if('offset' in json) {
-          reqNextPage(json.offset);
-        } else {
-          auteurs.geladen = true;
-          cb();
-        }
-      });
-    }
-    reqNextPage('');
+      extractNames(items, records);
+      items.geladen = true;
+      cb();
+    });
+  }
+
+  function downloadAuteurs(auteurs, cb) {
+    downloadBoekenNames('Auteurs?view=Te%20lezen%20in%20bib&fields%5B%5D=Name', auteurs, cb);
   }
 
   function downloadGenres(genres, cb) {
-    function reqNextPage(offset) {
-      var url = 'Genres?view=Te%20lezen%20in%20bib&fields%5B%5D=Name';
-      if(offset.length) url += '&offset=' + offset;
-      requestTeLezenBoeken(url, (json, err) => {
-        if(err) {
-          cb(err);
-          return;
-        }
-
-        extractNames(genres, json.records);
-        if('offset' in json) {
-          reqNextPage(json.offset);
-        } else {
-          genres.geladen = true;
-          cb();
-        }
-      });
-    }
-    reqNextPage('');
+    downloadBoekenNames('Genres?view=Te%20lezen%20in%20bib&fields%5B%5D=Name', genres, cb);
   }
 
   function joinData(boekRecs, auteurs, genres) {
@@ -266,23 +265,23 @@
       joinData(boekRecs, auteurs, genres);
     });
 
-    requestTeLezenBoeken('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Auteur&fields%5B%5D=Vindplaats%20bib&fields%5B%5D=Reeks&fields%5B%5D=Pagina%27s&fields%5B%5D=Genres', (json, err) => {
+    requestTeLezenBoeken('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Auteur&fields%5B%5D=Vindplaats%20bib&fields%5B%5D=Reeks&fields%5B%5D=Pagina%27s&fields%5B%5D=Genres', (records, err) => {
       if(err) {
         alert('Download te lezen boeken: ' + err);
         return;
       }
 
-      boekRecs = json.records;
+      boekRecs = records;
       joinData(boekRecs, auteurs, genres);
     });
 
-    requestTeBekijkenFilms('Films?view=Te%20bekijken%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Jaar%20uitgegeven&fields%5B%5D=Duur', (json, err) => {
+    requestTeBekijkenFilms('Films?view=Te%20bekijken%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Jaar%20uitgegeven&fields%5B%5D=Duur', (records, err) => {
       if(err) {
         alert('Download te bekijken films: ' + err);
         return;
       }
 
-      var films = extractFilms(json.records);
+      var films = extractFilms(records);
       saveJson('bib/films', films);
       renderFilms(films);
     });
