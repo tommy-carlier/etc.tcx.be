@@ -66,6 +66,10 @@
     var dd = append(lijst, 'DD', 'Details');
     appendTxt(dd, getBoekDetails(boek));
     if(boek.inReeks) append(dd, 'SPAN', 'Series', '(reeks)');
+    if(boek.genres) {
+      dd = append(lijst, 'DD', 'Details');
+      appendTxt(dd, boek.genres.join(', '));
+    }
   }
 
   function formatDuration(seconds) {
@@ -141,28 +145,36 @@
     request('app2cUKpOgqnvXJn2/' + url, cb);
   }
 
-  function extractAuteurs(auteurs, records) {
+  function extractNames(items, records) {
     for(var n = records.length, i = 0; i < n; i++) {
       var record = records[i];
-      auteurs[record.id] = record.fields.Name;
+      items[record.id] = record.fields.Name;
     }
   }
 
-  function extractBoeken(records, auteurs) {
+  function extractBoeken(records, auteurs, genres) {
     var boeken = [];
-    for(var n = records.length, i = 0; i < n; i++) {
-      var fields = records[i].fields;
+    for(var bn = records.length, bi = 0; bi < bn; bi++) {
+      var fields = records[bi].fields;
       var boek = {
         titel: fields.Titel,
         vindplaats: fields['Vindplaats bib'],
         auteur: '',
         inReeks: 'Reeks' in fields && fields.Reeks.length > 0,
-        paginas: fields["Pagina's"]||0
+        paginas: fields["Pagina's"]||0,
+        genres: []
       };
       if(fields.Auteur.length) {
         var auteurID = fields.Auteur[0];
         if(auteurID in auteurs) {
           boek.auteur = auteurs[auteurID];
+        }
+      }
+      var boekGenres = fields.Genres||[];
+      for(var gn = boekGenres.length, gi = 0; gi < gn; gi++) {
+        var genreID = boekGenres[gi];
+        if(genreID in genres) {
+          boek.genres.push(genres[genreID]);
         }
       }
       boeken.push(boek);
@@ -193,7 +205,7 @@
           return;
         }
 
-        extractAuteurs(auteurs, json.records);
+        extractNames(auteurs, json.records);
         if('offset' in json) {
           reqNextPage(json.offset);
         } else {
@@ -205,31 +217,63 @@
     reqNextPage('');
   }
 
-  function joinBoekenAuteurs(boekRecs, auteurs) {
-    var boeken = extractBoeken(boekRecs, auteurs);
-    saveJson('bib/boeken', boeken);
-    renderBoeken(boeken);
+  function downloadGenres(genres, cb) {
+    function reqNextPage(offset) {
+      var url = 'Genres?view=Te%20lezen%20in%20bib&fields%5B%5D=Name';
+      if(offset.length) url += '&offset=' + offset;
+      requestTeLezenBoeken(url, (json, err) => {
+        if(err) {
+          cb(err);
+          return;
+        }
+
+        extractNames(genres, json.records);
+        if('offset' in json) {
+          reqNextPage(json.offset);
+        } else {
+          genres.geladen = true;
+          cb();
+        }
+      });
+    }
+    reqNextPage('');
+  }
+
+  function joinData(boekRecs, auteurs, genres) {
+    if(boekRecs.length && auteurs.geladen && genres.geladen) {
+      var boeken = extractBoeken(boekRecs, auteurs, genres);
+      saveJson('bib/boeken', boeken);
+      renderBoeken(boeken);
+    }
   }
   
   function startDownloadData() {
-    var auteurs = { geladen:false }, boekRecs = [];
+    var auteurs = { geladen:false }, genres = { geladen:false }, boekRecs = [];
     
     downloadAuteurs(auteurs, err => {
       if(err) {
         alert('Download auteurs: ' + err);
         return;
       }
-      if(boekRecs.length) joinBoekenAuteurs(boekRecs, auteurs);
+      joinData(boekRecs, auteurs, genres);
+    });
+    
+    downloadGenres(genres, err => {
+      if(err) {
+        alert('Download genres: ' + err);
+        return;
+      }
+      joinData(boekRecs, auteurs, genres);
     });
 
-    requestTeLezenBoeken('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Auteur&fields%5B%5D=Vindplaats%20bib&fields%5B%5D=Reeks&fields%5B%5D=Pagina%27s', (json, err) => {
+    requestTeLezenBoeken('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Auteur&fields%5B%5D=Vindplaats%20bib&fields%5B%5D=Reeks&fields%5B%5D=Pagina%27s&fields%5B%5D=Genres', (json, err) => {
       if(err) {
         alert('Download te lezen boeken: ' + err);
         return;
       }
 
       boekRecs = json.records;
-      if(auteurs.geladen) joinBoekenAuteurs(boekRecs, auteurs);
+      joinData(boekRecs, auteurs, genres);
     });
 
     requestTeBekijkenFilms('Films?view=Te%20bekijken%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Jaar%20uitgegeven&fields%5B%5D=Duur', (json, err) => {
