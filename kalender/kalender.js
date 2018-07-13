@@ -101,7 +101,7 @@
     append(e, 'span', 'DayMonth', shortMonthNames[m]);
     if(yday) append(e, 'span', 'YearDay', yday.toString());
     elems[ymd] = e;
-    if(wday === 4 && mday === 13) appendEvent(e, 'Vrijdag de dertiende');
+    if(wday === 5 && mday === 13) appendEvent(e, 'Vrijdag de dertiende');
     return e;
   }
 
