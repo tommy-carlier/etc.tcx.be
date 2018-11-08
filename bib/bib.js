@@ -62,7 +62,8 @@
   }
 
   function renderBoek(lijst, boek) {
-    append(lijst, 'DT', 'Title', boek.titel);
+    var dt = append(lijst, 'DT', 'Title', boek.titel);
+    if('prioriteit' in boek && boek.prioriteit) dt.classList.add('Priority');
     var dd = append(lijst, 'DD', 'Details');
     appendTxt(dd, getBoekDetails(boek));
     if(boek.inReeks) append(dd, 'SPAN', 'Series', '(reeks)');
@@ -86,7 +87,8 @@
   }
 
   function renderFilm(lijst, film) {
-    append(lijst, 'DT', 'Title', film.titel);
+    var dt = append(lijst, 'DT', 'Title', film.titel);
+    if('prioriteit' in film && film.prioriteit) dt.classList.add('Priority');
     var dd = append(lijst, 'DD', 'Details');
     appendTxt(dd, getFilmDetails(film));
   }
@@ -184,7 +186,8 @@
         auteur: '',
         inReeks: 'Reeks' in fields && fields.Reeks.length > 0,
         paginas: fields["Pagina's"]||0,
-        genres: []
+        genres: [],
+        prioriteit: 'Prioriteit' in fields && fields.Prioriteit
       };
       if(fields.Auteur.length) {
         var auteurID = fields.Auteur[0];
@@ -211,7 +214,8 @@
       films.push({
         titel: fields.Titel,
         jaarUitgegeven: fields['Jaar uitgegeven']||0,
-        duur: fields.Duur
+        duur: fields.Duur,
+        prioriteit: 'Prioriteit' in fields && fields.Prioriteit
       });
     }
     return films;
@@ -265,7 +269,7 @@
       joinData(boekRecs, auteurs, genres);
     });
 
-    requestTeLezenBoeken('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Auteur&fields%5B%5D=Vindplaats%20bib&fields%5B%5D=Reeks&fields%5B%5D=Pagina%27s&fields%5B%5D=Genres', (records, err) => {
+    requestTeLezenBoeken('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Auteur&fields%5B%5D=Vindplaats%20bib&fields%5B%5D=Reeks&fields%5B%5D=Pagina%27s&fields%5B%5D=Genres&fields%5B%5D=Prioriteit', (records, err) => {
       if(err) {
         alert('Download te lezen boeken: ' + err);
         return;
@@ -275,7 +279,7 @@
       joinData(boekRecs, auteurs, genres);
     });
 
-    requestTeBekijkenFilms('Films?view=Te%20bekijken%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Jaar%20uitgegeven&fields%5B%5D=Duur', (records, err) => {
+    requestTeBekijkenFilms('Films?view=Te%20bekijken%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Jaar%20uitgegeven&fields%5B%5D=Duur&fields%5B%5D=Prioriteit', (records, err) => {
       if(err) {
         alert('Download te bekijken films: ' + err);
         return;

@@ -1,8 +1,8 @@
 html, body {
   height: 100%;
   margin: 0; padding: 0;
-  background: #FFF;
-  color: #000;
+  background: #FDF6E3;
+  color: #333;
 }
 
 body, button, input {
@@ -22,6 +22,10 @@ body, button, input {
 
 .Title {
   margin: 1em 0 0;
+}
+
+.Priority {
+  font-weight: bold;
 }
 
 .Details {
