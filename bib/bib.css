@@ -28,11 +28,11 @@ body, button, input {
   margin: 1em 0 0;
 }
 
-.Priority {
+.Title.Priority {
   font-weight: bold;
 }
 
-.OnlyPriority .Priority {
+.OnlyPriority .Title.Priority {
   font-weight: normal;
 }
 
