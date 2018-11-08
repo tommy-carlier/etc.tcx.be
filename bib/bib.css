@@ -20,12 +20,20 @@ body, button, input {
   display: none;
 }
 
+#onlyPriority {
+  display: block;
+}
+
 .Title {
   margin: 1em 0 0;
 }
 
 .Priority {
   font-weight: bold;
+}
+
+.OnlyPriority .Priority {
+  font-weight: normal;
 }
 
 .Details {
@@ -38,22 +46,27 @@ body, button, input {
   opacity: 0.6;
 }
 
-label {
+.OnlyPriority .Title:not(.Priority),
+.OnlyPriority .Details:not(.Priority) {
+  display: none;
+}
+
+#apiKeyScreen label {
   display: block;
   font-size: 80%;
 }
 
-label > input {
+#apiKeyScreen label > input {
   display: block;
   box-sizing: border-box;
   width: 100%;
 }
 
-form > footer {
+#apiKeyScreen  > footer {
   margin: 0.5em 0;
 }
 
-form > footer > button {
+#apiKeyScreen  > footer > button {
   font-size: 90%;
   padding: 0 0.7em;
 }

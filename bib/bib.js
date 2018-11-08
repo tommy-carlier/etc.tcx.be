@@ -62,13 +62,13 @@
   }
 
   function renderBoek(lijst, boek) {
-    var dt = append(lijst, 'DT', 'Title', boek.titel);
-    if('prioriteit' in boek && boek.prioriteit) dt.classList.add('Priority');
-    var dd = append(lijst, 'DD', 'Details');
+    var priorityClass = ('prioriteit' in boek && boek.prioriteit) ? ' Priority' : '';
+    append(lijst, 'DT', 'Title' + priorityClass, boek.titel);
+    var dd = append(lijst, 'DD', 'Details' + priorityClass);
     appendTxt(dd, getBoekDetails(boek));
     if(boek.inReeks) append(dd, 'SPAN', 'Series', '(reeks)');
     if(boek.genres) {
-      dd = append(lijst, 'DD', 'Details');
+      dd = append(lijst, 'DD', 'Details' + priorityClass);
       appendTxt(dd, boek.genres.join(', '));
     }
   }
@@ -87,9 +87,9 @@
   }
 
   function renderFilm(lijst, film) {
-    var dt = append(lijst, 'DT', 'Title', film.titel);
-    if('prioriteit' in film && film.prioriteit) dt.classList.add('Priority');
-    var dd = append(lijst, 'DD', 'Details');
+    var priorityClass = ('prioriteit' in film && film.prioriteit) ? ' Priority' : '';
+    append(lijst, 'DT', 'Title' + priorityClass, film.titel);
+    var dd = append(lijst, 'DD', 'Details' + priorityClass);
     appendTxt(dd, getFilmDetails(film));
   }
 
@@ -314,4 +314,9 @@
       }
     });
   }
+
+  d.getElementById('onlyPriority').getElementsByTagName('INPUT')[0].addEventListener('change', e => {
+    if(e.target.checked) d.body.classList.add('OnlyPriority');
+    else d.body.classList.remove('OnlyPriority');
+  });
 }())
