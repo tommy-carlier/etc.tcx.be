@@ -315,7 +315,7 @@
     });
   }
 
-  d.getElementById('onlyPriority').getElementsByTagName('INPUT')[0].addEventListener('change', e => {
+  d.getElementById('onlyPriority').addEventListener('change', e => {
     if(e.target.checked) d.body.classList.add('OnlyPriority');
     else d.body.classList.remove('OnlyPriority');
   });

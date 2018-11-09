@@ -9,6 +9,11 @@ body, button, input {
   font: normal 11pt/1.7 'Segoe UI',Avenir,sans-serif;
 }
 
+label {
+  display: block;
+  padding: 1em 0;
+}
+
 .Screen {
   box-sizing: border-box;
   max-width: 35em;
@@ -18,10 +23,6 @@ body, button, input {
 
 .Screen:not(:target) {
   display: none;
-}
-
-#onlyPriority {
-  display: block;
 }
 
 .Title {
@@ -52,7 +53,6 @@ body, button, input {
 }
 
 #apiKeyScreen label {
-  display: block;
   font-size: 80%;
 }
 
