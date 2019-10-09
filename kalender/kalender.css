@@ -123,7 +123,6 @@ html, body {
   background: transparent;
   color: #EF6C00;
   cursor: pointer;
-  transition: opacity 0.3s ease-in-out;
 }
 
 .NavToPrevYear:hover, .NavToNextYear:hover {
