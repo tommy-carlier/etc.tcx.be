@@ -7,10 +7,10 @@ $selection-background: #BDE9FF;
 $hyperlink-color: #1692D0;
 $hyperlink-highlight-color: #28B3F9;
 $hyperlink-visited-color: #9D2AD6;
-$content-font-family: Georgia,serif;
+$content-font-family: 'Segoe UI',Avenir,Tahom,sans-serif;
 
 html {
-  font: normal 14pt/1.5 $content-font-family;
+  font: normal 12pt/1.5 $content-font-family;
   text-rendering: optimizeLegibility;
 }
 
@@ -49,7 +49,7 @@ td > ul {
   margin: 0 0 1em 0.3em;
 }
 
-h1 + h2, h2 + p, h2 + ul, h2 + table {
+h1 + h2, h1 + p, h1 + ul, h1 + table, h2 + p, h2 + ul, h2 + table {
   margin-top: 0.3em;
 }
 
@@ -74,7 +74,7 @@ th, td {
 
 tbody th {
   white-space: nowrap;
-  font-size: 85%;
+  font-size: 90%;
 }
 
 .flow > * {
