@@ -127,7 +127,7 @@ tbody th {
 
 @media print {
   html {
-    font-size: 11pt;
+    font-size: 10pt;
   }
 
   a, a:visited {
@@ -136,5 +136,9 @@ tbody th {
 
   .dimmedText {
     color: lighten(#000, 40%);
+  }
+
+  .pageBreakBefore {
+    page-break-before: always;
   }
 }

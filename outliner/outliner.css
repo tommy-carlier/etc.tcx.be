@@ -1,0 +1,28 @@
+html, body {
+  height: 100%;
+  margin: 0; padding: 0;
+  background: #FDF6E3;
+  color: #333;
+}
+
+body {
+  font: normal 11pt/1.7 'Segoe UI',Avenir,sans-serif;
+}
+
+.Expander {
+  text-align: center;
+  width: 1.5em;
+  opacity: 0.5;
+  float: left;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.Expander::before { content: '🞂' }
+.Expander:hover { opacity: 1; }
+.expanded > .Expander { transform: rotate(90deg); }
+
+.Content, .Children {
+  margin: 0 0.5em 0 1.5em;
+}
+
+.collapsed > .Children { display: none; }
