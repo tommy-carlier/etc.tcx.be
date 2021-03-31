@@ -6,7 +6,7 @@ html, body {
 }
 
 body, button, input {
-  font: normal 11pt/1.7 'Comic Sans MS','Chalkboard SE',sans-serif;
+  font: normal 11pt/1.7 Avenir,'Segoe UI',sans-serif;
 }
 
 label {
