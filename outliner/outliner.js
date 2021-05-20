@@ -81,7 +81,14 @@
     return childrenElement(node).appendChild(child);
   }
 
-  function appendNewSibling(node) {
+  function appendNewSiblingOrFirstChild(node) {
+    if(isExpanded(node)) {
+      const firstChild = childrenElement(node).firstChild;
+      if(firstChild) {
+        focusContent(prependSibling(firstChild, createNode()));
+        return;
+      }
+    }
     focusContent(appendSibling(node, createNode()));
   }
 
@@ -141,7 +148,7 @@
     const node = e.target.parentElement;
     switch(e.key) {
       case 'Enter':
-      if(getModKeys(e) == MOD_NONE) { appendNewSibling(node); e.preventDefault(); }
+      if(getModKeys(e) == MOD_NONE) { appendNewSiblingOrFirstChild(node); e.preventDefault(); }
       break;
 
       case 'Tab':
