@@ -99,7 +99,7 @@
   }
 
   function moveUp(node) {
-    const prev = node.previousSibling;
+    const prev = node.previousSibling || parentNode(node);
     if(prev) {
       prependSibling(prev, node);
       focusContent(node);
@@ -107,7 +107,7 @@
   }
 
   function moveDown(node) {
-    const next = node.nextSibling;
+    const next = node.nextSibling || parentNode(node);
     if(next) {
       appendSibling(next, node);
       focusContent(node);
