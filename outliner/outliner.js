@@ -54,10 +54,7 @@
   }
 
   function focusPrevContent(node) {
-    var prev = node.previousSibling;
-    if(prev) prev = lastVisibleLeaf(prev);
-    else prev = parentNode(node);
-    focusContent(prev);
+    focusContent(lastVisibleLeaf(node.previousSibling) || parentNode(node));
   }
 
   function focusNextContent(node) {
