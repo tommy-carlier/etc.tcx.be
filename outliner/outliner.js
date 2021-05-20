@@ -62,6 +62,10 @@
 
   function focusNextContent(node) {
     var next = isExpanded(node) ? childrenElement(node).firstChild : node.nextSibling;
+    if(!next) {
+      const parent = parentNode(node);
+      if(parent) next = parent.nextSibling;
+    }
     focusContent(next);
   }
 
