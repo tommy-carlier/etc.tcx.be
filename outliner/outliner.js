@@ -40,6 +40,7 @@
   function expand(node) { swapClass(node, 'collapsed', 'expanded'); }
   function collapse(node) { swapClass(node, 'expanded', 'collapsed'); }
   function toggle(node) { (isExpanded(node)?collapse:expand)(node); }
+  function collapseIfEmpty(node) { if(!childrenElement(node).firstChild) collapse(node); }
 
   function focusContent(node) {
     if(node) contentElement(node).focus();
@@ -49,6 +50,7 @@
     while(node && isExpanded(node)) {
       var lastChild = childrenElement(node).lastChild;
       if(lastChild) node = lastChild;
+      else break;
     }
     return node;
   }
@@ -102,22 +104,27 @@
     const parent = parentNode(node);
     if(parent) {
       appendSibling(parent, node);
+      collapseIfEmpty(parent);
       focusContent(node);
     }
   }
 
   function moveUp(node) {
-    const prev = node.previousSibling || parentNode(node);
+    const parent = parentNode(node);
+    const prev = node.previousSibling || parent;
     if(prev) {
       prependSibling(prev, node);
+      collapseIfEmpty(parent);
       focusContent(node);
     }
   }
 
   function moveDown(node) {
-    const next = node.nextSibling || parentNode(node);
+    const parent = parentNode(node);
+    const next = node.nextSibling || parent;
     if(next) {
       appendSibling(next, node);
+      collapseIfEmpty(parent);
       focusContent(node);
     }
   }
