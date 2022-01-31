@@ -1,0 +1,45 @@
+body {
+  font: normal 11pt 'Segoe UI', 'Avenir', sans-serif;
+  background: #FFF;
+  color: #000;
+}
+
+h1 {
+  font-size: 170%;
+  font-weight: lighter;
+  text-align: center;
+}
+
+table {
+  color: #CCC;
+  margin: 0 auto;
+  font-size: inherit;
+  border-collapse: collapse;
+}
+
+th {
+  font-weight: normal;
+}
+
+tbody th {
+  text-align: left;
+  padding-right: 1em;
+}
+
+th, td {
+  vertical-align: baseline;
+}
+
+thead th {
+  border-bottom: solid 1px #000;
+}
+
+thead th, td {
+  text-align: center;
+  font-size: 80%;
+  width: 2.3em;
+}
+
+th.current, td.current, tr.selected > th {
+  color: #000;
+}
