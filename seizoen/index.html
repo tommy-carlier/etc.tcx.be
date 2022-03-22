@@ -1,72 +1,128 @@
----
----
 <!DOCTYPE html>
 <html lang=nl-BE>
-  <head>
-    <meta charset=utf-8>
-    <title>Seizoenskalender</title>
-    <meta name=viewport content="width=device-width,initial-scale=1">
-    <meta http-equiv=Permissions-Policy content="interest-cohort=()">
-    <link rel=stylesheet href="seizoen.css">
-    <link rel=canonical href="{{site.url}}{{page.url | replace:'index.html',''}}">
-  </head>
-  <body>
-    <h1>Groenten</h1>
-    <table>
-      <thead>
-        <tr><th><th>JAN<th>FEB<th>MAA<th>APR<th>MEI<th>JUN<th>JUL<th>AUG<th>SEP<th>OKT<th>NOV<th>DEC</tr>
-      </thead>
-      <tbody>
-        <tr><th>Aardappel<td>JAN<td>FEB<td>MAA<td>APR<td><td>JUN<td>JUL<td>AUG<td>SEP<td>OKT<td>NOV<td>DEC</tr>
-        <tr><th>Aardpeer<td>JAN<td>FEB<td><td><td><td><td><td><td><td><td>NOV<td>DEC</tr>
-        <tr><th>Andijvie<td><td><td><td>APR<td>MEI<td>JUN<td>JUL<td>AUG<td>SEP<td>OKT<td>NOV<td>DEC</tr>
-        <tr><th>Artisjok<td><td><td><td><td><td>JUN<td>JUL<td>AUG<td>SEP<td>OKT<td><td></tr>
-        <tr><th>Asperge<td><td><td><td>APR<td>MEI<td>JUN<td><td><td><td><td><td></tr>
-        <tr><th>Aubergine<td><td><td><td><td><td><td>JUL<td>AUG<td>SEP<td>OKT<td><td></tr>
-        <tr><th>Bleekselder<td><td><td><td><td><td><td>JUL<td>AUG<td>SEP<td>OKT<td>NOV<td></tr>
-        <tr><th>Bloemkool<td><td><td>MAA<td>APR<td>MEI<td>JUN<td>JUL<td>AUG<td>SEP<td>OKT<td>NOV<td></tr>
-        <tr><th>Boerenkool<td>JAN<td>FEB<td>MAA<td><td><td><td><td><td><td>OKT<td>NOV<td>DEC</tr>
-        <tr><th>Broccoli<td><td><td><td><td><td>JUN<td>JUL<td>AUG<td>SEP<td>OKT<td>NOV<td></tr>
-        <tr><th>Chinese kool<td><td><td><td><td><td><td>JUL<td>AUG<td>SEP<td>OKT<td>NOV<td></tr>
-        <tr><th>Courgette<td><td><td><td><td><td><td>JUL<td>AUG<td>SEP<td>OKT<td>NOV<td></tr>
-        <tr><th>Doperwt<td><td><td><td><td>MEI<td>JUN<td>JUL<td><td><td><td><td></tr>
-        <tr><th>Groene selder<td><td>FEB<td>MAA<td>APR<td>MEI<td>JUN<td>JUL<td>AUG<td>SEP<td>OKT<td>NOV<td>DEC</tr>
-        <tr><th>Groenlof<td><td><td><td><td><td><td><td>AUG<td><td><td><td></tr>
-        <tr><th>Knolselder<td>JAN<td>FEB<td>MAA<td><td><td><td><td>AUG<td>SEP<td>OKT<td>NOV<td>DEC</tr>
-        <tr><th>Komkommer<td><td><td><td><td><td><td>JUL<td>AUG<td>SEP<td><td><td></tr>
-        <tr><th>Koolraap<td>JAN<td>FEB<td>MAA<td><td><td><td><td><td><td>OKT<td>NOV<td>DEC</tr>
-        <tr><th>Koolrabi<td><td><td><td><td>MEI<td>JUN<td>JUL<td>AUG<td>SEP<td>OKT<td><td></tr>
-        <tr><th>Kropsla<td><td><td><td><td>MEI<td>JUN<td>JUL<td>AUG<td>SEP<td>OKT<td><td></tr>
-        <tr><th>Maïs<td><td><td><td><td><td><td><td>AUG<td>SEP<td><td><td></tr>
-        <tr><th>Paddenstoel<td>JAN<td>FEB<td>MAA<td>APR<td>MEI<td>JUN<td>JUL<td>AUG<td>SEP<td>OKT<td>NOV<td>DEC</tr>
-        <tr><th>Paprika<td><td><td><td><td><td><td>JUL<td>AUG<td>SEP<td>OKT<td><td></tr>
-        <tr><th>Pastinaak<td>JAN<td>FEB<td>MAA<td><td><td><td><td><td><td>OKT<td>NOV<td>DEC</tr>
-        <tr><th>Pompoen<td>JAN<td>FEB<td>MAA<td><td><td><td><td>AUG<td>SEP<td>OKT<td>NOV<td>DEC</tr>
-        <tr><th>Prei<td>JAN<td>FEB<td>MAA<td>APR<td>MEI<td>JUN<td>JUL<td>AUG<td>SEP<td>OKT<td>NOV<td>DEC</tr>
-        <tr><th>Prinsessenboon<td><td><td><td><td><td>JUN<td>JUL<td>AUG<td>SEP<td>OKT<td><td></tr>
-        <tr><th>Raap<td>JAN<td>FEB<td>MAA<td>APR<td>MEI<td>JUN<td><td><td>SEP<td>OKT<td>NOV<td>DEC</tr>
-        <tr><th>Raapsteel<td><td><td><td>APR<td>MEI<td><td><td>AUG<td>SEP<td>OKT<td><td></tr>
-        <tr><th>Radijs<td><td><td>MAA<td>APR<td>MEI<td>JUN<td>JUL<td>AUG<td>SEP<td>OKT<td><td></tr>
-        <tr><th>Rammenas<td>JAN<td>FEB<td>MAA<td><td><td><td><td><td>SEP<td>OKT<td>NOV<td>DEC</tr>
-        <tr><th>Rode biet<td>JAN<td>FEB<td>MAA<td>APR<td><td><td>JUL<td>AUG<td>SEP<td>OKT<td>NOV<td>DEC</tr>
-        <tr><th>Rodekool<td>JAN<td>FEB<td>MAA<td><td><td><td>JUL<td>AUG<td>SEP<td>OKT<td>NOV<td>DEC</tr>
-        <tr><th>Savooikool<td>JAN<td>FEB<td>MAA<td><td><td>JUN<td>JUL<td>AUG<td>SEP<td>OKT<td>NOV<td>DEC</tr>
-        <tr><th>Schorseneer<td>JAN<td>FEB<td>MAA<td><td><td><td><td><td><td>OKT<td>NOV<td>DEC</tr>
-        <tr><th>Snijboon<td><td><td><td><td><td><td>JUL<td>AUG<td>SEP<td>OKT<td><td></tr>
-        <tr><th>Spinazie<td><td><td>MAA<td>APR<td>MEI<td>JUN<td>JUL<td>AUG<td>SEP<td>OKT<td><td></tr>
-        <tr><th>Spitskool<td><td><td><td>APR<td>MEI<td>JUN<td>JUL<td>AUG<td>SEP<td>OKT<td><td></tr>
-        <tr><th>Spruit<td>JAN<td>FEB<td>MAA<td><td><td><td><td><td><td>OKT<td>NOV<td>DEC</tr>
-        <tr><th>Tomaat<td><td><td><td><td><td>JUN<td>JUL<td>AUG<td>SEP<td>OKT<td><td></tr>
-        <tr><th>Ui<td>JAN<td>FEB<td>MAA<td>APR<td>MEI<td>JUN<td>JUL<td>AUG<td>SEP<td>OKT<td>NOV<td>DEC</tr>
-        <tr><th>Veldsla<td>JAN<td>FEB<td>MAA<td><td><td><td><td><td><td>OKT<td>NOV<td>DEC</tr>
-        <tr><th>Venkel<td><td><td><td><td><td>JUN<td>JUL<td>AUG<td>SEP<td>OKT<td>NOV<td></tr>
-        <tr><th>Warmoes<td><td><td><td><td>MEI<td>JUN<td>JUL<td>AUG<td>SEP<td>OKT<td><td></tr>
-        <tr><th>Winterpostelein<td>JAN<td>FEB<td>MAA<td><td><td><td><td><td><td>OKT<td>NOV<td>DEC</tr>
-        <tr><th>Witloof<td>JAN<td>FEB<td>MAA<td>APR<td><td><td><td><td><td>OKT<td>NOV<td>DEC</tr>
-        <tr><th>Wittekool<td>JAN<td>FEB<td>MAA<td><td><td><td>JUL<td>AUG<td>SEP<td>OKT<td>NOV<td>DEC</tr>
-        <tr><th>Wortel<td>JAN<td>FEB<td>MAA<td><td>MEI<td>JUN<td>JUL<td>AUG<td>SEP<td>OKT<td>NOV<td>DEC</tr>
-      </tbody>
-    </table>
-    <script src="seizoen.js"></script>
-  </body>
-</html>
+<meta charset=utf-8>
+<title>Seizoenskalender</title>
+<style>
+html { font-family: 'Georgia', serif; background: #FFF; color: #333; }
+a { color: green; }
+a:visited { color: olive; }
+table { border-collapse: collapse; }
+th { font-weight: normal; text-align: left; }
+td { width: 2.3em; text-align: center; }
+.selected, .current { background: rgba(200, 200, 200, 0.3); }
+@media print {
+  html { color: #000; }
+}
+@media screen and (prefers-color-scheme: dark) {
+  html { background: #333; color: #CCC; }
+  a { color: lime; }
+  a:visited { color: greenyellow; }
+}
+</style>
+
+<section id=groenten>
+<h1>Groenten</h1>
+<pre>
+Aardappel: JFMA-J JASOND
+Aardpeer: JF---- ----ND
+Ajuin: JFMAMJ JASOND
+Andijvie: ---AMJ JASOND
+Artisjok: -----J JASO--
+Asperge: ---AMJ ------
+Aubergine: ------ JASO--
+Bleekselder: ------ JASON-
+Bloemkool: --MAMJ JASON-
+Boerenkool: JFM--- ---OND
+Broccoli: -----J JASON-
+Chinese kool: ------ JASON-
+Courgette: ------ JASON-
+Doperwt: ----MJ J-----
+Groene selder: -FMAMJ JASOND
+Groenlof: ------ -A----
+Knolselder: JFM--- -ASOND
+Komkommer: ------ JAS---
+Koolraap: JFM--- ---OND
+Koolrabi: ----MJ JASO--
+Kropsla: ----MJ JASO--
+Maïs: ------ -AS---
+Paddenstoel: JFMAMJ JASOND
+Paprika: ------ JASO--
+Pastinaak: JFM--- ---OND
+Pompoen: JFM--- -ASOND
+Prei: JFMAMJ JASOND
+Prinsessenboon: -----J JASO--
+Raap: JFMAMJ --SOND
+Raapsteel: ---AM- -ASO--
+Radijs: --MAMJ JASO--
+Rammenas: JFM--- --SOND
+Rode biet: JFMA-- JASOND
+Rodekool: JFM--- JASOND
+Savooikool: JFM--J JASOND
+Schorseneer: JFM--- ---OND
+Snijboon: ------ JASO--
+Spinazie: --MAMJ JASO--
+Spitskool: ---AMJ JASO--
+Spruit: JFM--- ---OND
+Tomaat: -----J JASO--
+Veldsla: JFM--- ---OND
+Venkel: -----J JASON-
+Warmoes: ----MJ JASO--
+Winterpostelein: JFM--- ---OND
+Witloof: JFMA-- ---OND
+Wittekool: JFM--- JASOND
+Wortel: JFM-MJ JASOND
+</pre>
+</section>
+
+<script>(function(){
+var d = document,
+    currentMonth = new Date().getMonth(); // 0-based
+
+function createEcosiaLink(name) {
+  var link = d.createElement('A');
+  link.innerText = name;
+  link.href = 'https://www.ecosia.org/search?q=' + encodeURIComponent(name);
+  return link;
+}
+
+function appendRow(table, line, pattern) {
+  var row = table.insertRow(),
+      cell = row.appendChild(d.createElement('TH')),
+      match = pattern.exec(line);
+
+  if(match) {
+    var name = match[1], months = match[2] + match[3];
+    
+    cell.appendChild(createEcosiaLink(name));
+    for(var i = 0, n = Math.min(12, months.length); i < n; i++) {
+      cell = row.insertCell();
+      if(months[i] != '-') {
+        cell.innerText = 'jan  feb  maa  apr  mei  juni juli aug  sep  okt  nov  dec'.substr(i * 5, 4).trim();
+        if(i == currentMonth) {
+          cell.className = 'current';
+          row.className = 'selected';
+        }
+      }
+    }
+  } else {
+    cell.colspan = 13;
+    cell.innerText = line;
+  }
+}
+
+function replaceWithTable(pre) {
+  var table = d.createElement('TABLE'),
+      pattern = /^([^:]+):\s*([A-Z-]{6})\s*([A-Z-]{6})$/;
+
+  for(var lines = pre.innerText.split('\n'), n = lines.length, i = 0; i < n; i++) {
+    var line = lines[i].trim();
+    if(line.length) appendRow(table, line, pattern);
+  }
+
+  pre.parentNode.replaceChild(table, pre);
+}
+
+for(var pres = d.getElementsByTagName('PRE'), n = pres.length, i = 0; i < n; i++) {
+  replaceWithTable(pres[i]);
+}
+}());</script>
