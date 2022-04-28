@@ -3,7 +3,7 @@
 <meta charset=utf-8>
 <title>Seizoenskalender</title>
 <style>
-html { font-family: sans-serif; background: lightgoldenrodyellow; color: green; }
+html { font: normal 11pt/125% sans-serif; background: lightgoldenrodyellow; color: green; }
 h1 { font-weight: normal; }
 a { color: green; }
 a:visited { color: darkgreen; }
@@ -12,7 +12,7 @@ th { font-weight: normal; text-align: left; }
 td { width: 2.3em; text-align: center; }
 .selected, .current { background: rgba(143, 255, 0, 0.3); }
 @media print {
-  html { color: #000; background: none; }
+  html, a, .selected, .current { color: #000; background: none; text-decoration: none; }
 }
 @media screen and (prefers-color-scheme: dark) {
   html { background: darkgreen; color: lightgoldenrodyellow; }
