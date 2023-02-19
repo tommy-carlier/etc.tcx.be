@@ -133,7 +133,7 @@
   function request(url, cb) {
     fetch('https://api.airtable.com/v0/' + url, {
       headers: { Authorization: 'Bearer ' + apiKey }
-    }).then(response => response.ok ? response : Promise.reject(Error(req.statusText)))
+    }).then(response => response.ok ? response : Promise.reject(Error(response.statusText)))
     .then(response => response.json())
     .then(json => cb(json, ''))
     .catch(err => cb({}, err));
