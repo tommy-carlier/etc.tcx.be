@@ -319,4 +319,8 @@
     if(e.target.checked) d.body.classList.add('OnlyPriority');
     else d.body.classList.remove('OnlyPriority');
   });
+
+  if('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('serviceworker.js');
+  }
 }())
