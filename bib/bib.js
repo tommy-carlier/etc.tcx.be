@@ -7,10 +7,6 @@
     return;
   }
 
-  if(w.applicationCache) {
-    applicationCache.addEventListener('updateready', ev => applicationCache.swapCache());
-  }
-
   function loadOrMigrate(newName, oldName) {
     var v = localStorage[newName];
     if(!v && oldName) {
@@ -303,8 +299,6 @@
 
   if(navigator.storage && navigator.storage.persist) {
     navigator.storage.persist().then(persistent => {
-      if(!persistent) alert('No persistent storage');
-      else alert('Persistent storage');
       if(apiKey && (location.hash != 'apiKeyScreen')) {
         navigateToListScreen();
       } else {
