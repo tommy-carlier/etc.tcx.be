@@ -300,17 +300,23 @@
       startDownloadData();
     }
   }
-  
-  if(apiKey && (location.hash != 'apiKeyScreen')) {
-    navigateToListScreen();
-  } else {
-    location.hash = 'apiKeyScreen';
-    d.getElementById('apiKeyScreen').addEventListener('submit', e => {
-      e.preventDefault();
-      apiKey = d.getElementById('apiKeyInput').value;
-      if(apiKey) {
-        localStorage.setItem('bib/apiKey', apiKey);
+
+  if(navigator.storage && navigator.storage.persist) {
+    navigator.storage.persist().then(persistent => {
+      if(!persistent) alert('No persistent storage');
+      else alert('Persistent storage');
+      if(apiKey && (location.hash != 'apiKeyScreen')) {
         navigateToListScreen();
+      } else {
+        location.hash = 'apiKeyScreen';
+        d.getElementById('apiKeyScreen').addEventListener('submit', e => {
+          e.preventDefault();
+          apiKey = d.getElementById('apiKeyInput').value;
+          if(apiKey) {
+            localStorage.setItem('bib/apiKey', apiKey);
+            navigateToListScreen();
+          }
+        });
       }
     });
   }
