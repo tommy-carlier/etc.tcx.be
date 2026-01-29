@@ -33,6 +33,7 @@ label {
   text-align: center;
   font-size: 80%;
   background: #F9ECC9;
+  z-index: 999;
 }
 
 .Title {
