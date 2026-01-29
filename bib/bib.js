@@ -7,6 +7,32 @@
     return;
   }
 
+  var statusBar = d.getElementById('statusBar'),
+    startedRequestCount = 0,
+    finishedRequestCount = 0;
+
+  function setStatus(status) {
+    statusBar.textContent = status;
+  }
+
+  function setStatusDownloading() {
+    if(finishedRequestCount < startedRequestCount) {
+      setStatus('Downloading ' + (finishedRequestCount+1) + '/' + startedRequestCount + '…');
+    } else {
+      setStatus('');
+    }
+  }
+
+  function updateStatusStartRequest() {
+    startedRequestCount++;
+    setStatusDownloading();
+  }
+
+  function updateStatusFinishRequest() {
+    finishedRequestCount++;
+    setStatusDownloading();
+  }
+
   function loadOrMigrate(newName, oldName) {
     var v = localStorage[newName];
     if(!v && oldName) {
@@ -127,12 +153,14 @@
   var apiKey = loadOrMigrate('bib/apiKey', 'airtableApiKey');
 
   function request(url, cb) {
+    updateStatusStartRequest();
     fetch('https://api.airtable.com/v0/' + url, {
       headers: { Authorization: 'Bearer ' + apiKey }
     }).then(response => response.ok ? response : Promise.reject(Error(response.statusText)))
     .then(response => response.json())
     .then(json => cb(json, ''))
-    .catch(err => cb({}, err));
+    .catch(err => cb({}, err))
+    .finally(updateStatusFinishRequest);
   }
 
   function requestRecords(url, cb) {
@@ -294,7 +322,7 @@
     renderFilms(loadJson('bib/films'));
     if(navigator.onLine) {
       startDownloadData();
-    }
+    } else setStatus('Offline');
   }
 
   if(navigator.storage && navigator.storage.persist) {

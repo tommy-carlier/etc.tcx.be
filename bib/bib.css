@@ -25,6 +25,16 @@ label {
   display: none;
 }
 
+.StatusBar {
+  position: fixed;
+  display: block;
+  left: 0; top: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 80%;
+  background: #F9ECC9;
+}
+
 .Title {
   margin: 1em 0 0;
 }
