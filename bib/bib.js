@@ -61,8 +61,7 @@
     } catch(e) { /* storage failed */ }
   }
 
-  var lijstTeLezenBoeken = d.getElementById('lijstTeLezenBoeken'),
-    lijstTeBekijkenFilms = d.getElementById('lijstTeBekijkenFilms');
+  var lijstTeLezenBoeken = d.getElementById('lijstTeLezenBoeken');
 
   function appendTxt(p,txt) {
     p.appendChild(d.createTextNode(txt));
@@ -95,26 +94,6 @@
     }
   }
 
-  function formatDuration(seconds) {
-    var hours = Math.floor(seconds / (60 * 60));
-    var minutes = Math.round((seconds - hours * 60 * 60) / 60);
-    return hours.toString() + ':' + (minutes < 10 ? '0' + minutes : minutes);
-  }
-
-  function getFilmDetails(film) {
-    var txt = [];
-    if(film.jaarUitgegeven > 0) txt.push(film.jaarUitgegeven);
-    if(film.duur) txt.push(formatDuration(film.duur));
-    return txt.join(' – ');
-  }
-
-  function renderFilm(lijst, film) {
-    var priorityClass = ('prioriteit' in film && film.prioriteit) ? ' Priority' : '';
-    append(lijst, 'DT', 'Title' + priorityClass, film.titel);
-    var dd = append(lijst, 'DD', 'Details' + priorityClass);
-    appendTxt(dd, getFilmDetails(film));
-  }
-
   function renderItems(list, items, render) {
     var f = d.createDocumentFragment();
     
@@ -132,22 +111,6 @@
 
   function renderBoeken(boeken) {
     renderItems(lijstTeLezenBoeken, boeken, renderBoek);
-  }
-
-  function shuffle(xs) {
-    var i = xs.length, x, rnd;
-    while(i) {
-      rnd = Math.floor(Math.random() * i);
-      i -= 1;
-      x = xs[i];
-      xs[i] = xs[rnd];
-      xs[rnd] = x;
-    }
-  }
-
-  function renderFilms(films) {
-    shuffle(films);
-    renderItems(lijstTeBekijkenFilms, films, renderFilm);
   }
 
   var apiKey = loadOrMigrate('bib/apiKey', 'airtableApiKey');
@@ -189,10 +152,6 @@
     requestRecords('appS3vbT8bkcbfnbt/' + url, cb);
   }
 
-  function requestTeBekijkenFilms(url, cb) {
-    requestRecords('app2cUKpOgqnvXJn2/' + url, cb);
-  }
-
   function extractNames(items, records) {
     for(var n = records.length, i = 0; i < n; i++) {
       var record = records[i];
@@ -229,20 +188,6 @@
       boeken.push(boek);
     }
     return boeken;
-  }
-
-  function extractFilms(records) {
-    var films = [];
-    for(var n = records.length, i = 0; i < n; i++) {
-      var fields = records[i].fields;
-      films.push({
-        titel: fields.Titel,
-        jaarUitgegeven: fields['Jaar uitgegeven']||0,
-        duur: fields.Duur,
-        prioriteit: 'Prioriteit' in fields && fields.Prioriteit
-      });
-    }
-    return films;
   }
 
   function downloadBoekenNames(url, items, cb) {
@@ -302,24 +247,12 @@
       boekRecs = records;
       joinData(boekRecs, auteurs, genres);
     });
-
-    requestTeBekijkenFilms('Films?view=Te%20bekijken%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Jaar%20uitgegeven&fields%5B%5D=Duur&fields%5B%5D=Prioriteit', (records, err) => {
-      if(err) {
-        alert('Download te bekijken films: ' + err);
-        return;
-      }
-
-      var films = extractFilms(records);
-      saveJson('bib/films', films);
-      renderFilms(films);
-    });
   }
 
   function navigateToListScreen() {
     location.hash = 'listScreen';
     localStorage.removeItem('bib/data');
     renderBoeken(loadJson('bib/boeken'));
-    renderFilms(loadJson('bib/films'));
     if(navigator.onLine) {
       startDownloadData();
     } else setStatus('Offline');
