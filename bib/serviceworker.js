@@ -1,4 +1,4 @@
-// 20260329.002
+// 20260407.001
 const CACHE_NAME = 'bib-v1';
 
 self.addEventListener('install', ev => {

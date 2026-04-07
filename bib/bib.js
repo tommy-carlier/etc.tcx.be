@@ -1,287 +1,276 @@
-(function(){
-  "use strict";
+const w = window, d = document,
+  statusBar = d.getElementById('statusBar'),
+  lijstTeLezenBoeken = d.getElementById('lijstTeLezenBoeken');
 
-  var w = window, d = document;
-  
-  if(!(w.localStorage && w.JSON && w.fetch)) {
-    return;
+var startedRequestCount = 0, finishedRequestCount = 0;
+
+function setStatus(status) {
+  statusBar.textContent = status;
+}
+
+function setStatusDownloading() {
+  if(finishedRequestCount < startedRequestCount) {
+    setStatus('Downloading ' + (finishedRequestCount+1) + '/' + startedRequestCount + '…');
+  } else {
+    setStatus('');
   }
+}
 
-  var statusBar = d.getElementById('statusBar'),
-    startedRequestCount = 0,
-    finishedRequestCount = 0;
+function updateStatusStartRequest() {
+  startedRequestCount++;
+  setStatusDownloading();
+}
 
-  function setStatus(status) {
-    statusBar.textContent = status;
-  }
+function updateStatusFinishRequest() {
+  finishedRequestCount++;
+  setStatusDownloading();
+}
 
-  function setStatusDownloading() {
-    if(finishedRequestCount < startedRequestCount) {
-      setStatus('Downloading ' + (finishedRequestCount+1) + '/' + startedRequestCount + '…');
-    } else {
-      setStatus('');
+function loadOrMigrate(newName, oldName) {
+  var v = localStorage[newName];
+  if(!v && oldName) {
+    v = localStorage[oldName];
+    if(v) {
+      localStorage.setItem(newName, v);
+      localStorage.removeItem(oldName);
     }
   }
+  return v;
+}
 
-  function updateStatusStartRequest() {
-    startedRequestCount++;
-    setStatusDownloading();
+function loadJson(newName, oldName) {
+  var s = loadOrMigrate(newName, oldName);
+  if(s) {
+    try {
+      return JSON.parse(s);
+    } catch(e) { /* parsing failed */}
+  }
+  return ({ });
+}
+
+function saveJson(name, json) {
+  try {
+    localStorage.setItem(name, JSON.stringify(json));
+  } catch(e) { /* storage failed */ }
+}
+
+function appendTxt(p,txt) {
+  p.appendChild(d.createTextNode(txt));
+}
+
+function append(p,tag,cls,txt) {
+  var e = d.createElement(tag);
+  if(cls && cls.length) e.className = cls; // can contain spaces
+  if(txt && txt.length) appendTxt(e, txt);
+  return p.appendChild(e);
+}
+
+function getBoekDetails(boek) {
+  var txt = [];
+  if(boek.auteur.length) txt.push(boek.auteur);
+  if(boek.paginas > 0) txt.push(boek.paginas + 'p');
+  txt.push(boek.vindplaats);
+  return txt.join(' – ');
+}
+
+function renderBoek(lijst, boek) {
+  var priorityClass = ('prioriteit' in boek && boek.prioriteit) ? ' Priority' : '';
+  append(lijst, 'DT', 'Title' + priorityClass, boek.titel);
+  var dd = append(lijst, 'DD', 'Details' + priorityClass);
+  appendTxt(dd, getBoekDetails(boek));
+  if(boek.inReeks) append(dd, 'SPAN', 'Series', '(reeks)');
+  if(boek.genres) {
+    dd = append(lijst, 'DD', 'Details' + priorityClass);
+    appendTxt(dd, boek.genres.join(', '));
+  }
+}
+
+function renderItems(list, items, render) {
+  var f = d.createDocumentFragment();
+  
+  for(var n = items.length, i = 0; i < n; i++){
+    render(f, items[i]);
   }
 
-  function updateStatusFinishRequest() {
-    finishedRequestCount++;
-    setStatusDownloading();
-  }
+  var range = d.createRange();
+  range.selectNodeContents(list);
+  range.deleteContents();
 
-  function loadOrMigrate(newName, oldName) {
-    var v = localStorage[newName];
-    if(!v && oldName) {
-      v = localStorage[oldName];
-      if(v) {
-        localStorage.setItem(newName, v);
-        localStorage.removeItem(oldName);
+  list.appendChild(f);
+}
+
+function renderBoeken(boeken) {
+  renderItems(lijstTeLezenBoeken, boeken, renderBoek);
+}
+
+var apiKey = loadOrMigrate('bib/apiKey', 'airtableApiKey');
+
+function request(url, cb) {
+  updateStatusStartRequest();
+  fetch('https://api.airtable.com/v0/' + url, {
+    headers: { Authorization: 'Bearer ' + apiKey }
+  }).then(response => response.ok ? response : Promise.reject(Error(response.statusText)))
+  .then(response => response.json())
+  .then(json => cb(json, ''))
+  .catch(err => cb({}, err))
+  .finally(updateStatusFinishRequest);
+}
+
+function requestRecords(url, cb) {
+  var records = [];
+  function reqNextPage(offset) {
+    var urlWithOffset = url;
+    if(offset.length) urlWithOffset += '&offset=' + offset;
+    request(urlWithOffset, (json, err) => {
+      if(err) {
+        cb(records, err);
+        return;
+      }
+
+      records = records.concat(json.records);
+      if('offset' in json) {
+        reqNextPage(json.offset);
+      } else {
+        cb(records);
+      }
+    });
+  }
+  reqNextPage('');
+}
+
+function requestTeLezenBoeken(url, cb) {
+  requestRecords('appS3vbT8bkcbfnbt/' + url, cb);
+}
+
+function extractNames(items, records) {
+  for(var n = records.length, i = 0; i < n; i++) {
+    var record = records[i];
+    items[record.id] = record.fields.Name;
+  }
+}
+
+function extractBoeken(records, auteurs, genres) {
+  var boeken = [];
+  for(var bn = records.length, bi = 0; bi < bn; bi++) {
+    var fields = records[bi].fields;
+    var boek = {
+      titel: fields.Titel,
+      vindplaats: fields['Vindplaats bib'],
+      auteur: '',
+      inReeks: 'Reeks' in fields && fields.Reeks.length > 0,
+      paginas: fields["Pagina's"]||0,
+      genres: [],
+      prioriteit: 'Prioriteit' in fields && fields.Prioriteit
+    };
+    if(fields.Auteur.length) {
+      var auteurID = fields.Auteur[0];
+      if(auteurID in auteurs) {
+        boek.auteur = auteurs[auteurID];
       }
     }
-    return v;
-  }
-
-  function loadJson(newName, oldName) {
-    var s = loadOrMigrate(newName, oldName);
-    if(s) {
-      try {
-        return JSON.parse(s);
-      } catch(e) { /* parsing failed */}
+    var boekGenres = fields.Genres||[];
+    for(var gn = boekGenres.length, gi = 0; gi < gn; gi++) {
+      var genreID = boekGenres[gi];
+      if(genreID in genres) {
+        boek.genres.push(genres[genreID]);
+      }
     }
-    return ({ });
+    boeken.push(boek);
   }
+  return boeken;
+}
+
+function downloadBoekenNames(url, items, cb) {
+  requestTeLezenBoeken(url, (records, err) => {
+    if(err) {
+      cb(err);
+      return;
+    }
+
+    extractNames(items, records);
+    items.geladen = true;
+    cb();
+  });
+}
+
+function downloadAuteurs(auteurs, cb) {
+  downloadBoekenNames('Auteurs?view=Te%20lezen%20in%20bib&fields%5B%5D=Name', auteurs, cb);
+}
+
+function downloadGenres(genres, cb) {
+  downloadBoekenNames('Genres?view=Te%20lezen%20in%20bib&fields%5B%5D=Name', genres, cb);
+}
+
+function joinData(boekRecs, auteurs, genres) {
+  if(boekRecs.length && auteurs.geladen && genres.geladen) {
+    var boeken = extractBoeken(boekRecs, auteurs, genres);
+    saveJson('bib/boeken', boeken);
+    renderBoeken(boeken);
+  }
+}
+
+function startDownloadData() {
+  var auteurs = { geladen:false }, genres = { geladen:false }, boekRecs = [];
   
-  function saveJson(name, json) {
-    try {
-      localStorage.setItem(name, JSON.stringify(json));
-    } catch(e) { /* storage failed */ }
-  }
-
-  var lijstTeLezenBoeken = d.getElementById('lijstTeLezenBoeken');
-
-  function appendTxt(p,txt) {
-    p.appendChild(d.createTextNode(txt));
-  }
-
-  function append(p,tag,cls,txt) {
-    var e = d.createElement(tag);
-    if(cls && cls.length) e.className = cls; // can contain spaces
-    if(txt && txt.length) appendTxt(e, txt);
-    return p.appendChild(e);
-  }
-
-  function getBoekDetails(boek) {
-    var txt = [];
-    if(boek.auteur.length) txt.push(boek.auteur);
-    if(boek.paginas > 0) txt.push(boek.paginas + 'p');
-    txt.push(boek.vindplaats);
-    return txt.join(' – ');
-  }
-
-  function renderBoek(lijst, boek) {
-    var priorityClass = ('prioriteit' in boek && boek.prioriteit) ? ' Priority' : '';
-    append(lijst, 'DT', 'Title' + priorityClass, boek.titel);
-    var dd = append(lijst, 'DD', 'Details' + priorityClass);
-    appendTxt(dd, getBoekDetails(boek));
-    if(boek.inReeks) append(dd, 'SPAN', 'Series', '(reeks)');
-    if(boek.genres) {
-      dd = append(lijst, 'DD', 'Details' + priorityClass);
-      appendTxt(dd, boek.genres.join(', '));
+  downloadAuteurs(auteurs, err => {
+    if(err) {
+      alert('Download auteurs: ' + err);
+      return;
     }
-  }
+    joinData(boekRecs, auteurs, genres);
+  });
+  
+  downloadGenres(genres, err => {
+    if(err) {
+      alert('Download genres: ' + err);
+      return;
+    }
+    joinData(boekRecs, auteurs, genres);
+  });
 
-  function renderItems(list, items, render) {
-    var f = d.createDocumentFragment();
-    
-    for(var n = items.length, i = 0; i < n; i++){
-      render(f, items[i]);
+  requestTeLezenBoeken('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Auteur&fields%5B%5D=Vindplaats%20bib&fields%5B%5D=Reeks&fields%5B%5D=Pagina%27s&fields%5B%5D=Genres&fields%5B%5D=Prioriteit', (records, err) => {
+    if(err) {
+      alert('Download te lezen boeken: ' + err);
+      return;
     }
 
-    var range = d.createRange();
-    range.selectNodeContents(list);
-    range.deleteContents();
-    range.detach();
+    boekRecs = records;
+    joinData(boekRecs, auteurs, genres);
+  });
+}
 
-    list.appendChild(f);
-  }
+function navigateToListScreen() {
+  location.hash = 'listScreen';
+  localStorage.removeItem('bib/data');
+  renderBoeken(loadJson('bib/boeken'));
+  if(navigator.onLine) {
+    startDownloadData();
+  } else setStatus('Offline');
+}
 
-  function renderBoeken(boeken) {
-    renderItems(lijstTeLezenBoeken, boeken, renderBoek);
-  }
-
-  var apiKey = loadOrMigrate('bib/apiKey', 'airtableApiKey');
-
-  function request(url, cb) {
-    updateStatusStartRequest();
-    fetch('https://api.airtable.com/v0/' + url, {
-      headers: { Authorization: 'Bearer ' + apiKey }
-    }).then(response => response.ok ? response : Promise.reject(Error(response.statusText)))
-    .then(response => response.json())
-    .then(json => cb(json, ''))
-    .catch(err => cb({}, err))
-    .finally(updateStatusFinishRequest);
-  }
-
-  function requestRecords(url, cb) {
-    var records = [];
-    function reqNextPage(offset) {
-      var urlWithOffset = url;
-      if(offset.length) urlWithOffset += '&offset=' + offset;
-      request(urlWithOffset, (json, err) => {
-        if(err) {
-          cb(records, err);
-          return;
-        }
-
-        records = records.concat(json.records);
-        if('offset' in json) {
-          reqNextPage(json.offset);
-        } else {
-          cb(records);
+if(navigator.storage && navigator.storage.persist) {
+  navigator.storage.persist().then(persistent => {
+    if(apiKey && (location.hash != 'apiKeyScreen')) {
+      navigateToListScreen();
+    } else {
+      location.hash = 'apiKeyScreen';
+      d.getElementById('apiKeyScreen').addEventListener('submit', e => {
+        e.preventDefault();
+        apiKey = d.getElementById('apiKeyInput').value;
+        if(apiKey) {
+          localStorage.setItem('bib/apiKey', apiKey);
+          navigateToListScreen();
         }
       });
     }
-    reqNextPage('');
-  }
-
-  function requestTeLezenBoeken(url, cb) {
-    requestRecords('appS3vbT8bkcbfnbt/' + url, cb);
-  }
-
-  function extractNames(items, records) {
-    for(var n = records.length, i = 0; i < n; i++) {
-      var record = records[i];
-      items[record.id] = record.fields.Name;
-    }
-  }
-
-  function extractBoeken(records, auteurs, genres) {
-    var boeken = [];
-    for(var bn = records.length, bi = 0; bi < bn; bi++) {
-      var fields = records[bi].fields;
-      var boek = {
-        titel: fields.Titel,
-        vindplaats: fields['Vindplaats bib'],
-        auteur: '',
-        inReeks: 'Reeks' in fields && fields.Reeks.length > 0,
-        paginas: fields["Pagina's"]||0,
-        genres: [],
-        prioriteit: 'Prioriteit' in fields && fields.Prioriteit
-      };
-      if(fields.Auteur.length) {
-        var auteurID = fields.Auteur[0];
-        if(auteurID in auteurs) {
-          boek.auteur = auteurs[auteurID];
-        }
-      }
-      var boekGenres = fields.Genres||[];
-      for(var gn = boekGenres.length, gi = 0; gi < gn; gi++) {
-        var genreID = boekGenres[gi];
-        if(genreID in genres) {
-          boek.genres.push(genres[genreID]);
-        }
-      }
-      boeken.push(boek);
-    }
-    return boeken;
-  }
-
-  function downloadBoekenNames(url, items, cb) {
-    requestTeLezenBoeken(url, (records, err) => {
-      if(err) {
-        cb(err);
-        return;
-      }
-
-      extractNames(items, records);
-      items.geladen = true;
-      cb();
-    });
-  }
-
-  function downloadAuteurs(auteurs, cb) {
-    downloadBoekenNames('Auteurs?view=Te%20lezen%20in%20bib&fields%5B%5D=Name', auteurs, cb);
-  }
-
-  function downloadGenres(genres, cb) {
-    downloadBoekenNames('Genres?view=Te%20lezen%20in%20bib&fields%5B%5D=Name', genres, cb);
-  }
-
-  function joinData(boekRecs, auteurs, genres) {
-    if(boekRecs.length && auteurs.geladen && genres.geladen) {
-      var boeken = extractBoeken(boekRecs, auteurs, genres);
-      saveJson('bib/boeken', boeken);
-      renderBoeken(boeken);
-    }
-  }
-  
-  function startDownloadData() {
-    var auteurs = { geladen:false }, genres = { geladen:false }, boekRecs = [];
-    
-    downloadAuteurs(auteurs, err => {
-      if(err) {
-        alert('Download auteurs: ' + err);
-        return;
-      }
-      joinData(boekRecs, auteurs, genres);
-    });
-    
-    downloadGenres(genres, err => {
-      if(err) {
-        alert('Download genres: ' + err);
-        return;
-      }
-      joinData(boekRecs, auteurs, genres);
-    });
-
-    requestTeLezenBoeken('Boeken?view=Te%20lezen%20in%20bib&fields%5B%5D=Titel&fields%5B%5D=Auteur&fields%5B%5D=Vindplaats%20bib&fields%5B%5D=Reeks&fields%5B%5D=Pagina%27s&fields%5B%5D=Genres&fields%5B%5D=Prioriteit', (records, err) => {
-      if(err) {
-        alert('Download te lezen boeken: ' + err);
-        return;
-      }
-
-      boekRecs = records;
-      joinData(boekRecs, auteurs, genres);
-    });
-  }
-
-  function navigateToListScreen() {
-    location.hash = 'listScreen';
-    localStorage.removeItem('bib/data');
-    renderBoeken(loadJson('bib/boeken'));
-    if(navigator.onLine) {
-      startDownloadData();
-    } else setStatus('Offline');
-  }
-
-  if(navigator.storage && navigator.storage.persist) {
-    navigator.storage.persist().then(persistent => {
-      if(apiKey && (location.hash != 'apiKeyScreen')) {
-        navigateToListScreen();
-      } else {
-        location.hash = 'apiKeyScreen';
-        d.getElementById('apiKeyScreen').addEventListener('submit', e => {
-          e.preventDefault();
-          apiKey = d.getElementById('apiKeyInput').value;
-          if(apiKey) {
-            localStorage.setItem('bib/apiKey', apiKey);
-            navigateToListScreen();
-          }
-        });
-      }
-    });
-  }
-
-  d.getElementById('onlyPriority').addEventListener('change', e => {
-    if(e.target.checked) d.body.classList.add('OnlyPriority');
-    else d.body.classList.remove('OnlyPriority');
   });
+}
 
-  if('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('serviceworker.js');
-  }
-}())
+d.getElementById('onlyPriority').addEventListener('change', e => {
+  if(e.target.checked) d.body.classList.add('OnlyPriority');
+  else d.body.classList.remove('OnlyPriority');
+});
+
+if('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('serviceworker.js');
+}
